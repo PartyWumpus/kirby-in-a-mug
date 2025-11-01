@@ -13,7 +13,7 @@ export const FabricJSCanvas = () => {
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasEl.current, {
       isDrawingMode: true,
-      backgroundColor: "#00db16ff",
+      backgroundColor: "#00ff00",
     });
 
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
@@ -29,7 +29,6 @@ export const FabricJSCanvas = () => {
   if (time == 0) {
     (async () => {
       const result = await fabricCanvas.current?.toBlob({
-      
         format: "png",
         multiplier: 2,
       });

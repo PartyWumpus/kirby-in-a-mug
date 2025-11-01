@@ -1,7 +1,13 @@
 import { getTalkSession, type TalkSession } from "@talkjs/core";
 import { Chatbox, type ChatboxRef } from "@talkjs/react-components";
 import "@talkjs/react-components/base.css";
-import { useEffect, useRef, useState, type PropsWithChildren } from "react";
+import {
+  Fragment,
+  useEffect,
+  useRef,
+  useState,
+  type PropsWithChildren,
+} from "react";
 import Draggable from "react-draggable";
 import "./App.css";
 import { FabricJSCanvas } from "./DrawableCanvas";
@@ -19,10 +25,23 @@ type Letter = {
 const appId = "tYrKVjrQ";
 const conversationId = "the_convo";
 
+const eventList = [
+  "scramble",
+  "bopit",
+  "musicBox",
+  "missingLetter",
+  "captcha",
+  "drawing",
+  "trivia",
+] as const;
+
 function App() {
   const [username, setUsername] = useState<string>("");
   const [score, setScore] = useState<number>(0);
   const [time, setTime] = useState(120);
+  const [popups, setPopups] = useState<
+    Record<string, (typeof eventList)[number]>
+  >({});
   const chatboxRef = useRef<ChatboxRef>(null);
   const sessionRef = useRef<TalkSession>(null);
 
@@ -35,16 +54,6 @@ function App() {
       clearInterval(interval1);
     };
   }, [time]);
-
-  useEffect(() => {
-    const interval1 = setInterval(() => {
-      randomEvent();
-    }, 3000);
-
-    return () => {
-      clearInterval(interval1);
-    };
-  }, []);
 
   const [keyboard, setKeyboard] = useState<Record<string, Letter>>({
     q: { symbol: "q", position: [3, 5], globallyPositioned: false },
@@ -162,72 +171,34 @@ function App() {
   }
 
   function randomEvent() {
-    const eventList = [
-      "scramble",
-      "bopit",
-      "musicBox",
-      "missingLetter",
-      "captcha",
-      "drawing",
-      "trivia",
-    ] as const;
     const newEvent = eventList[Math.floor(Math.random() * eventList.length)];
-    switch (newEvent) {
-      case "scramble":
-        scramble();
-        break;
-      case "bopit":
-        bopit();
-        break;
-      case "musicBox":
-        musicBox();
-        break;
-      case "missingLetter":
-      case "captcha":
-      case "drawing":
-      case "trivia":
-    }
-  }
-
-  function scramble() {
-    const randomWord = words[Math.floor(Math.random() * words.length)];
-    const wordArray = randomWord.split("");
-    const scrambledWord = shuffle(wordArray);
-
-    function shuffle(array: string[]) {
-      let currentIndex = array.length;
-
-      while (currentIndex != 0) {
-        let randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
-
-        [array[currentIndex], array[randomIndex]] = [
-          array[randomIndex],
-          array[currentIndex],
-        ];
-        return array;
-      }
-    }
-    return <UiThingy title="Scramble"> {scrambledWord} </UiThingy>;
+    setPopups({ ...popups, [crypto.randomUUID()]: newEvent });
   }
 
   function bopit() {
-  const actions = ["Bop It!", "Twist It!", "Pull It!"]
-  const chosen = actions[Math.floor(Math.random() * actions.length)]
-  return <UiThingy title={chosen}> <img width="100" height="200" src="/assets/bopit.webp" />
-  <button>bop</button>
-  <button>twist</button>
-  <button>pull</button>
-   </UiThingy>;
+    const actions = ["Bop It!", "Twist It!", "Pull It!"];
+    const chosen = actions[Math.floor(Math.random() * actions.length)];
+    return (
+      <UiThingy title={chosen}>
+        {" "}
+        <img width="100" height="200" src="/assets/bopit.webp" />
+        <button>bop</button>
+        <button>twist</button>
+        <button>pull</button>
+      </UiThingy>
+    );
   }
 
   function musicBox() {
-    <UiThingy title="Wind the box!"> <img width="100" height="200" src="/assets/puppet.webp"/> </UiThingy>;
-    var fail = false
-    var existTime = 200
-    var timeLeft = 10
+    <UiThingy title="Wind the box!">
+      {" "}
+      <img width="100" height="200" src="/assets/puppet.webp" />{" "}
+    </UiThingy>;
+    var fail = false;
+    var existTime = 200;
+    var timeLeft = 10;
     if (timeLeft <= 0) {
-      fail = true
+      fail = true;
     }
   }
 
@@ -318,6 +289,21 @@ function App() {
             <UiThingy title="random event button">
               <button onClick={() => randomEvent()}></button>
             </UiThingy>
+            {Object.entries(popups).map(([id, flavor]) => {
+              let elem = <span style={{ color: "red" }}>error</span>;
+              switch (flavor) {
+                case "scramble":
+                  elem = <Scramble />;
+                  break;
+                case "bopit":
+                case "musicBox":
+                case "missingLetter":
+                case "captcha":
+                case "drawing":
+                case "trivia":
+              }
+              return <Fragment key={id}>{elem}</Fragment>;
+            })}
           </div>
           <Keeb keyboard={keyboard} onKeyPress={onKeyPress} />
 
@@ -458,6 +444,28 @@ function UiThingy(props: PropsWithChildren<{ title?: string }>) {
       </div>
     </Draggable>
   );
+}
+
+function Scramble() {
+  const randomWord = words[Math.floor(Math.random() * words.length)];
+  const wordArray = randomWord.split("");
+  const scrambledWord = useRef(shuffle(wordArray));
+
+  function shuffle(array: string[]) {
+    let currentIndex = array.length;
+
+    while (currentIndex != 0) {
+      const randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex],
+        array[currentIndex],
+      ];
+      return array;
+    }
+  }
+  return <UiThingy title="Scramble"> {scrambledWord.current} </UiThingy>;
 }
 
 export default App;
