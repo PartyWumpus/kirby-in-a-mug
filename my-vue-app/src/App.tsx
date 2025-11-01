@@ -278,7 +278,7 @@ function App() {
                   elem = <BopIt deleter={deleter} />;
                   break;
                 case "musicBox":
-                  //elem = <MusicBox />;
+                  elem = <MusicBox deleter={deleter}/>;
                   break;
                 case "missingLetter":
                   //elem = <MissingLetter />;
@@ -420,7 +420,7 @@ function TimerGame({ time }: { time: number }) {
   return <span>{time}</span>;
 }
 
-function UiThingy(props: PropsWithChildren<{ title?: string }>) {
+function UiThingy(props: PropsWithChildren<{ title?: string, width?: number }>) {
   const nodeRef = useRef<HTMLDivElement>(null);
   const offsets = useRef<[number, number]>([
     (Math.random() - 0.5) * 600 + 800,
@@ -439,7 +439,7 @@ function UiThingy(props: PropsWithChildren<{ title?: string }>) {
         style={{
           position: "absolute",
           background: "black",
-          width: "100px",
+          width: `${props.width ?? 100 }px`,
           pointerEvents: "all",
         }}
         ref={nodeRef}
@@ -512,16 +512,36 @@ function BopIt({ deleter }: { deleter: () => void }) {
   );
 }
 
-function MusicBox() {
-  <UiThingy title="Wind the box!">
-    <img width="100" height="200" src={puppetImage} />{" "}
-  </UiThingy>;
-  var fail = false;
-  var existTime = 200;
-  var timeLeft = 10;
+function MusicBox({ deleter }: { deleter: () => void }) {
+  const [time, setTime] = useState(200);
+  const [timeLeft,setTime2] = useState(10);
+
+  useEffect(() => {
+    const interval1 = setInterval(() => {
+      setTime(time - 1);
+      setTime2(timeLeft - 1)
+    }, 1000);
+
+    return () => {
+      clearInterval(interval1);
+    };
+  }, [time, timeLeft]);
+
   if (timeLeft <= 0) {
-    fail = true;
+    deleter();
+  if (time == 0){
+    deleter()
   }
+  }
+  return (
+    <UiThingy title="Wind the box!" width={500}>
+    <span>{timeLeft}s</span>
+    <img width="500" height="200" src={puppetImage} />
+    <button onClick={()=>{
+      setTime2(Math.min(timeLeft + 5, 30))
+    }}>wind</button>
+  </UiThingy>
+  )
 }
 
 function Drawing({ deleter }: { deleter: () => void }) {
