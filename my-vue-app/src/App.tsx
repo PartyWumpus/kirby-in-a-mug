@@ -178,7 +178,10 @@ function App() {
         break;
       case "bopit":
         bopit();
+        break;
       case "musicBox":
+        musicBox();
+        break;
       case "missingLetter":
       case "captcha":
       case "drawing":
@@ -209,15 +212,23 @@ function App() {
   }
 
   function bopit() {
-    function createImage() {
-      return (
-        <UiThingy title="Bop-it">
-          {" "}
-          <img width="100" height="200" src="/assets/bopit.webp" />{" "}
-        </UiThingy>
-      );
+  const actions = ["Bop It!", "Twist It!", "Pull It!"]
+  const chosen = actions[Math.floor(Math.random() * actions.length)]
+  return <UiThingy title={chosen}> <img width="100" height="200" src="/assets/bopit.webp" />
+  <button>bop</button>
+  <button>twist</button>
+  <button>pull</button>
+   </UiThingy>;
+  }
+
+  function musicBox() {
+    <UiThingy title="Wind the box!"> <img width="100" height="200" src="/assets/puppet.webp"/> </UiThingy>;
+    var fail = false
+    var existTime = 200
+    var timeLeft = 10
+    if (timeLeft <= 0) {
+      fail = true
     }
-    const actions = ["Bop It!", "Twist It!", "Pull It!"];
   }
 
   useEffect(() => {
