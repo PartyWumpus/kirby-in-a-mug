@@ -94,7 +94,7 @@ function App() {
   }
 
   // DEBUG
-  signUp("wasd");
+  signUp("qwert");
 
   return (
     <>
