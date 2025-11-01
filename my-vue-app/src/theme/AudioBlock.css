@@ -1,0 +1,19 @@
+.t-theme-audio-block {
+  display: contents;
+  width: 100%;
+  min-width: 25ch;
+}
+
+.t-theme-audio-block .t-audio-player {
+  margin-bottom: 0.5em;
+}
+
+.t-theme-audio-block .t-attachment-icon {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+}
+
+.t-theme-audio-block .t-filesize {
+  font-size: 0.8em;
+}

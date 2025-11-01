@@ -1,0 +1,22 @@
+.t-theme-compact-message-content > .t-theme-icon {
+  width: 1.25em;
+  height: 1.25em;
+  margin-right: 0.25em;
+}
+
+.t-theme-compact-message-content .t-text ul {
+  list-style: inside;
+  margin: 0;
+  margin-left: 0.5em;
+  padding: 0;
+  display: inline;
+}
+
+.t-theme-compact-message-content .t-text li {
+  display: inline list-item;
+  margin-right: 1em;
+}
+
+.t-theme-compact-message-content .t-text li::marker {
+  content: "•  ";
+}

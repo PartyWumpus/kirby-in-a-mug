@@ -1,6 +1,10 @@
 import { getTalkSession } from "@talkjs/core";
+import { Chatbox, type ChatboxRef } from "@talkjs/react-components";
+import "@talkjs/react-components/base.css";
 import { useRef, useState } from "react";
 import "./App.css";
+import * as myTheme from "./theme";
+import "./theme/index.css";
 
 type Letter = {
   symbol: string;
@@ -13,7 +17,8 @@ const conversationId = "the_convo";
 
 function App() {
   const [username, setUsername] = useState<string>("");
-  const chatboxRef = useRef<HTMLElement | null>(null);
+  const [score, setScore] = useState<number>(0);
+  const chatboxRef = useRef<ChatboxRef | null>(null);
 
   const [keyboard, setKeyboard] = useState<Record<string, Letter>>({
     q: { symbol: "q", position: [3, 5], globallyPositioned: false },
@@ -49,14 +54,6 @@ function App() {
     "?": { symbol: "?", position: [90, 70], globallyPositioned: false },
   });
   const joinButtonRef = useRef<null | HTMLInputElement>(null);
-
-  if (chatboxRef.current !== null) {
-    const chatbar =
-      chatboxRef.current.querySelector<HTMLDivElement>(".t-editor > div");
-    if (chatbar !== null) {
-      chatbar.contentEditable = "false";
-    }
-  }
 
   async function signUp(username: string) {
     const session = getTalkSession({
@@ -110,15 +107,18 @@ function App() {
           }
           `}
           </style>
-          <t-chatbox
+          <Chatbox
             ref={chatboxRef}
             host="durhack.talkjs.com"
-            app-id={appId}
-            user-id={username}
-            conversation-id={conversationId}
+            appId={appId}
+            userId={username}
+            conversationId={conversationId}
             chatHeaderVisible={false}
             enterSendsMessage={false}
-          ></t-chatbox>
+            theme={myTheme}
+            style={{ width: "100%" }}
+          ></Chatbox>
+          <span>score: {score}</span>
           <div
             style={{
               border: "1px white solid",

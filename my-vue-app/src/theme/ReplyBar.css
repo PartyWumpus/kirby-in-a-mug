@@ -1,0 +1,64 @@
+.t-theme-reply-bar {
+  height: 4.286em;
+  display: flex;
+  align-items: center;
+  background-color: #ececec;
+  padding: 0.714em;
+  color: #262626;
+  border-top: #d4d4d4 solid 1px;
+}
+
+.t-theme-reply-bar .t-content {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 0.165rem 0px
+}
+
+.t-theme-reply-bar .t-close-button {
+  width: 2.571em;
+  height: 2.571em;
+
+  padding: 0.571em;
+  border: 0;
+  border-radius: 9999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  opacity: 0.75;
+  transition: 150ms ease-out;
+}
+
+.t-theme-reply-bar .t-close-button:hover {
+  background-color: rgba(38, 38, 38, 0.05);
+  color: #007df9;
+  opacity: 1;
+}
+
+.t-theme-reply-bar .t-body {
+  flex-grow: 1;
+  padding: 0 1em;
+  overflow: hidden;
+}
+
+.t-theme-reply-bar .t-close-icon,
+.t-theme-reply-bar .t-reply-icon {
+  width: 1.428em;
+  height: 1.428em;
+  min-width: 1.428em;
+  min-height: 1.428em;
+}
+
+.t-theme-reply-bar .t-mention {
+  line-height: 1.5;
+  background-color: rgba(200, 200, 200, 0.5);
+  color: inherit;
+  margin: 0;
+  border-radius: 9999px;
+  padding: 0.25rem 0.45rem;
+}
+.t-theme-reply-bar .t-mention[t-is-current-user] {
+  font-weight: bold;
+  background-color: rgba(200, 200, 200, 0.9);
+}

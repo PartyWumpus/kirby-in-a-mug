@@ -1,0 +1,27 @@
+.t-theme-avatar {
+  display: block;
+
+  overflow: hidden;
+  background-color: #ececec;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  border-style: solid;
+
+  border-radius: 50%;
+  border-width: 2px;
+  border-color: #fff;
+
+  /* prevent the avatar from shrinking if the contents next to it is large */
+  flex-shrink: 0;
+
+  /* Align to the start (top in this case) but because we use align-items: center
+   * on the parent the message will be vertically centered, unless it is taller
+   * than this Avatar */
+  align-self: flex-start;
+
+  /* Avatar width is also used when sizing message bubbles, be sure to update
+   * the width in UserMessage if needed */
+  width: 3em;
+  height: 3em;
+}

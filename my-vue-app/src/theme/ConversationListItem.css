@@ -1,0 +1,166 @@
+.t-theme-conversation-list-item {
+  color: #525252;
+  text-decoration: none;
+  width: 100%;
+  padding: 0;
+  height: auto;
+  padding: 1rem;
+  border: none;
+  border-bottom: 1px solid #d4d4d4;
+  background-color: transparent;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  word-wrap: break-word;
+  transition:
+    color 0.1s ease-in-out,
+    background-color 0.1s ease-in-out;
+
+  background-color: white;
+  text-align: initial;
+}
+
+.t-theme-conversation-list-item a {
+  color: #525252;
+}
+
+.t-theme-conversation-list-item[t-selected] a {
+  color: #fff;
+}
+
+.t-theme-conversation-list-item:last-child {
+  border-bottom: none;
+}
+
+.t-theme-conversation-list-item:hover {
+  background-color: #f7f7f7;
+  cursor: pointer;
+}
+
+.t-theme-conversation-list-item[t-selected] {
+  color: #fff;
+  background-color: #007df9;
+}
+
+.t-theme-conversation-list-item[t-selected]:focus-visible {
+  outline: #fff 2px solid;
+  outline-offset: -4px;
+  border-bottom: 0;
+}
+
+.t-theme-conversation-list-item:focus-visible {
+  outline: #3291ff 2px solid;
+  outline-offset: -2px;
+}
+
+.t-theme-conversation-list-item[t-unread] {
+  background-color: #f7f7f7;
+  color: #111;
+}
+
+.t-theme-conversation-list-item[t-selected][t-unread] {
+  color: #fff;
+  background-color: #007df9;
+}
+
+.t-theme-conversation-list-item .t-inner {
+  margin-left: 10px;
+  flex-basis: 0;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.t-theme-conversation-list-item .t-header,
+.t-theme-conversation-list-item .t-body {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  flex-shrink: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.t-theme-conversation-list-item .t-message-sender {
+  margin-right: 0.2rem;
+}
+
+.t-theme-conversation-list-item .t-timestamp {
+  font-size: 85%;
+  opacity: 0.75;
+}
+
+.t-theme-conversation-list-item .t-timestamp,
+.t-theme-conversation-list-item .t-unread-dot {
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+.t-theme-conversation-list-item .t-conversation-name {
+  font-weight: 600;
+}
+
+.t-theme-conversation-list-item .t-conversation-name,
+.t-theme-conversation-list-item .t-message {
+  flex-grow: 1;
+  font-size: 85%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.t-theme-conversation-list-item .t-message {
+  opacity: 0.75;
+  flex-basis: 0; /* helps balance width of message preview with unread message counter */
+}
+
+.t-theme-conversation-list-item .t-unread-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.4rem;
+  border-radius: 9999px;
+  height: 20px;
+  width: auto;
+  min-width: 20px;
+  text-align: center;
+  line-height: inherit;
+  font-size: 85%;
+  color: #fff;
+  background-color: #007df9;
+}
+
+.t-theme-conversation-list-item .t-unread-generic-dot {
+  padding: 0.6ex;
+  transform: scale(0.999);
+  border-radius: 999px;
+  background-color: #007df9;
+}
+
+.t-theme-conversation-list-item[t-selected] .t-unread-generic-dot {
+  padding: 0.6ex;
+  transform: scale(0.999);
+  border-radius: 999px;
+  background-color: #fff;
+}
+
+.t-theme-conversation-list-item[t-selected] .t-unread-dot {
+  color: #007df9;
+  background-color: #fff;
+}
+
+.t-theme-conversation-list-item .t-unread-dot:empty {
+  padding: 0;
+  min-width: 10px;
+  min-height: 10px;
+}
+
+/* The following sections ensure that lists are more compact by displaying them inline*/
+.t-theme-conversation-list-item .t-message li {
+  display: inline list-item;
+  margin-right: 0.25rem;
+}
+
+.t-theme-conversation-list-item .t-message ul {
+  list-style: inside;
+}

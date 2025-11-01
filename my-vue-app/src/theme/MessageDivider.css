@@ -1,0 +1,40 @@
+.t-message-divider {
+  width: 100%;
+  margin: 1.3em 0.5em 0 0.5em;
+  display: grid;
+  grid-template-columns: 1fr max-content 1fr;
+  color: #95a7b1;
+}
+
+.t-message-divider span {
+  vertical-align: top;
+  white-space: nowrap;
+  height: 1.3em;
+  padding: 0 20px;
+}
+
+.t-message-divider .t-line[t-side="right"] {
+  /* the line on the right sometimes forms a nested grid with the actual line (the hr) and a (New) marker */
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  gap: 10px;
+  grid-column: 3;
+}
+
+.t-message-divider .t-line .t-line-segment {
+  height: 0;
+  width: 100%;
+  margin-top: 10px;
+  border: none;
+  border-bottom: 1px solid #95a7b1;
+}
+
+.t-message-divider .t-line .t-unread-marker {
+  position: relative;
+  top: -4px;
+  height: 28px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  border: 1px solid #95a7b1;
+  vertical-align: middle;
+}

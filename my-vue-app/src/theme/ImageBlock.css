@@ -1,0 +1,44 @@
+.t-theme-image-block {
+  display: contents;
+}
+
+.t-theme-image-block .download-icon {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.2em;
+}
+
+.t-image-wrapper {
+  display: block;
+  height: auto;
+  min-height: 40px;
+  max-height: 400px;
+}
+
+.t-theme-image-block .t-root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: inherit;
+  max-height: inherit;
+  height: auto;
+  max-width: min(calc(100% + 2em), calc(var(--img-w) * 1px));
+  /* There is a 1em margin on the message bubble so we make the image 2em too wide and then shift it 1em left */
+  width: calc(100% + 2em);
+  transform: translateX(-1em);
+  aspect-ratio: var(--img-w) / var(--img-h);
+  overflow: hidden;
+  margin: 0 auto 0.5em;
+}
+
+.t-theme-image-block .t-image {
+  width: 100%;
+  height: 100%;
+  max-width: calc(var(--img-w) * 1px);
+  max-height: calc(var(--img-h) * 1px);
+  object-fit: contain;
+}
+
+.t-theme-image-block .t-filesize {
+  font-size: 0.8em;
+}

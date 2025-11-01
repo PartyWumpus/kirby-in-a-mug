@@ -1,0 +1,24 @@
+.t-theme-text-block {
+  display: contents;
+}
+
+.t-theme-text-block .t-text .t-emoji {
+  height: 1.15em;
+  width: 1.15em;
+  margin: 0 0.1em 0.1em 0.1em;
+  vertical-align: middle;
+}
+
+.t-theme-text-block .t-text {
+  white-space: pre-wrap;
+}
+
+.t-theme-text-block ul {
+  padding-left: 0;
+  margin: 0;
+}
+
+.t-theme-text-block ul li {
+  margin-left: 1em;
+  margin-bottom: 0.5em;
+}

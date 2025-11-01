@@ -1,0 +1,81 @@
+.t-theme-message-list-footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5em;
+    margin-top: 1.35em;
+}
+
+.t-theme-message-list-footer .t-typing-avatars {
+    display: flex;
+    flex-direction: row;
+    align-items: left;
+    justify-content: center;
+    width: fit-content
+}
+
+.t-theme-message-list-footer .t-typing-avatars>.t-theme-avatar {
+    width: 2.6em;
+    height: 2.6em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111;
+    line-height: 2.6em;
+    vertical-align: text-top;
+    font-size: 0.75em;
+}
+
+.t-theme-message-list-footer .t-typing-avatars>.t-theme-avatar:not(:last-child) {
+    margin-right: -0.66em;
+}
+
+.t-theme-message-list-footer .t-typing-bubble {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1em;
+    background-color: #f7f7f7;
+    border: 1px solid #ececec;
+    color: #111;
+    padding: 0 1em;
+    font-size: 0.75em;
+}
+
+.t-theme-message-list-footer .t-typing-animation {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    height: 2.6em;
+    line-height: 2.6em;
+}
+
+.t-theme-message-list-footer .t-typing-animation span {
+    height: 6px;
+    width: 6px;
+    background-color: #737373;
+    display: inline-block;
+    border-radius: 50%;
+    opacity: 0.4;
+}
+
+.t-theme-message-list-footer .t-typing-animation span:nth-of-type(1) {
+    animation: 1s blink infinite 0.3333s;
+}
+
+.t-theme-message-list-footer .t-typing-animation span:nth-of-type(2) {
+    animation: 1s blink infinite 0.6666s;
+}
+
+.t-theme-message-list-footer .t-typing-animation span:nth-of-type(3) {
+    animation: 1s blink infinite 0.9999s;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 1;
+    }
+}

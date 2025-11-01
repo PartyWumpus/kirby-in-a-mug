@@ -1,0 +1,399 @@
+.t-theme-message {
+  display: block;
+  margin-top: 0.35em;
+}
+
+.t-theme-message:last-child {
+  margin-top: 1.35em;
+}
+
+.t-theme-message:not(:last-child) .t-message-sender-name {
+  display: none;
+}
+
+.t-theme-message:not(:last-child) .t-theme-avatar {
+  visibility: hidden;
+}
+
+.t-theme-message[t-sender="system"] {
+  margin-top: 1.35em;
+}
+
+.t-theme-message[t-sender="system"] + .t-theme-message[t-sender="system"] {
+  /* If there are multiple system messages then make the spacing between them a bit tighter */
+  margin-top: 0.5em;
+}
+
+.t-theme-message:has(.t-reactions):has(+ .t-theme-message) {
+  margin-bottom: 0.75em;
+}
+
+.t-theme-message .t-message-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.t-theme-message[t-sender="currentUser"] .t-message-row {
+  flex-direction: row-reverse;
+}
+
+.t-theme-message .t-message-body {
+  white-space: normal;
+  overflow: hidden;
+  border-radius: 0.75em;
+  border-width: 1px;
+  border-style: solid;
+  word-wrap: break-word;
+  position: relative;
+  display: inline-block;
+  max-width: calc(100% - 6em - 0.25em - 0.25em);
+  border-color: #ececec;
+  background-color: #f7f7f7;
+  color: #111;
+  padding: 0.75em 1em;
+}
+
+.t-theme-message .t-message-body .t-theme-referenced-message {
+  border-left: solid 2px;
+  margin-bottom: 0.4em;
+  font-size: 93%;
+  padding: 0 0.55em;
+}
+
+/* change some styles if the message is by currentUser */
+.t-theme-message[t-sender="currentUser"] .t-message-body {
+  border-color: #007df9;
+  background-color: #007df9;
+  color: #fff;
+}
+
+.t-theme-message .t-message-body .t-message-content {
+  display: contents;
+  margin-top: 0.75em;
+}
+
+.t-theme-message
+  .t-message-body:has(
+    .t-theme-audio-block,
+    .t-theme-voice-block,
+    .t-theme-location-block
+  ) {
+  width: 100%;
+}
+
+/* If there's no sender, no referenced message, and the first content block type is neither text nor file, remove the top padding */
+.t-theme-message
+  .t-message-body:not(
+    :has(
+        .t-message-sender-name,
+        .t-theme-referenced-message,
+        .t-theme-text-block:first-child,
+        .t-theme-file-block:first-child
+      )
+  ) {
+  padding-top: 0;
+}
+
+/* If the first content block type is neither text nor file, add bottom margin to the message sender's name */
+.t-theme-message
+  .t-message-body:not(
+    :has(.t-theme-text-block:first-child, .t-theme-file-block:first-child)
+  )
+  .t-message-sender-name {
+  margin-bottom: 0.75em;
+}
+
+.t-theme-message button[data-action] {
+  border-radius: 0.375em;
+  font-size: inherit;
+  margin: 1px 0;
+  padding: 0.25em 0.325em;
+  cursor: pointer;
+  transition:
+    color 200ms ease-in-out,
+    background-color 200ms ease-in-out,
+    border 200ms ease-in-out;
+}
+
+.t-theme-message[t-sender="currentUser"] button[data-action] {
+  color: #0761d1;
+  background-color: white;
+  border: 1px solid white;
+}
+
+.t-theme-message[t-sender="currentUser"]:enabled button[data-action]:hover,
+.t-theme-message[t-sender="currentUser"]:enabled button[data-action]:active {
+  color: inherit;
+  background-color: transparent;
+}
+
+.t-theme-message[t-sender="currentUser"] button[data-action]:focus-visible {
+  outline: white solid 2px;
+  outline-offset: 2px;
+}
+
+.t-theme-message[t-sender="other"] button[data-action] {
+  color: #111;
+  background-color: transparent;
+  border: 1px solid #525252;
+}
+
+.t-theme-message[t-sender="other"]:enabled button[data-action]:hover {
+  color: white;
+  background-color: #111;
+  border: 1px solid #111;
+}
+
+.t-theme-message[t-sender="other"]:enabled button[data-action]:active {
+  color: white;
+  background-color: #404040;
+  border: 1px solid #404040;
+}
+
+.t-theme-message[t-sender="other"] button[data-action]:focus-visible {
+  outline: #525252 solid 2px;
+  outline-offset: 2px;
+}
+
+.t-theme-message[t-sender="system"] button[data-action] {
+  color: white;
+  background-color: #007df9;
+  border: 1px solid #007df9;
+}
+
+.t-theme-message[t-sender="system"]:enabled button[data-action]:hover {
+  color: white;
+  background-color: #0761d1;
+  border: 1px solid #0761d1;
+}
+
+.t-theme-message[t-sender="system"]:enabled button[data-action]:active {
+  color: white;
+  background-color: #3291ff;
+  border: 1px solid #3291ff;
+}
+
+.t-theme-message[t-sender="system"] button[data-action]:focus-visible {
+  outline: #007df9 solid 2px;
+  outline-offset: 2px;
+}
+
+.t-theme-message button[data-action]:disabled {
+  background-color: gray;
+  border-color: gray;
+}
+
+.t-theme-message .t-message-sender-name {
+  font-size: 75%;
+  font-weight: bold;
+}
+
+.t-theme-message .t-reactions {
+  margin-top: 0.25em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
+}
+
+.t-theme-message[t-sender="currentUser"] .t-reactions {
+  justify-content: flex-end;
+  margin-right: 0.75em;
+}
+
+.t-theme-message[t-sender="other"] .t-reactions {
+  margin-left: 3.75em;
+}
+
+.t-theme-message[t-sender="system"] .t-message-body {
+  background: transparent;
+  width: 100%;
+  max-width: none;
+  border: none;
+}
+
+.t-theme-message[t-sender="system"] .t-message-row {
+  white-space: normal;
+  border-radius: 0.75em;
+  overflow: hidden;
+  white-space: pre-wrap;
+  background-color: transparent;
+  color: #111;
+  border: 1px solid #d4d4d4;
+}
+
+.t-theme-message .t-message-content a {
+  color: currentColor;
+}
+
+.t-theme-message .t-message-status {
+  display: inline-flex;
+
+  font-size: 75%;
+
+  float: right;
+  margin-left: 2em;
+  margin-top: 0.6em;
+  opacity: 75%;
+
+  min-width: 3.5ch;
+  text-align: right;
+}
+
+.t-theme-message .t-message-loading-spinner {
+  animation: spin 1.2s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+  width: 1em;
+  height: 1em;
+}
+
+.t-theme-message .t-status-icon {
+  margin-left: 0.25em;
+  letter-spacing: -0.3em;
+
+  min-width: 1em;
+}
+
+.t-theme-message .t-message-row > button {
+  border: none;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border-radius: 9999px;
+  border: 0;
+  color: inherit;
+  opacity: 0.75;
+  cursor: pointer;
+  font-size: 120%;
+  background: inherit;
+}
+
+.t-theme-message .t-message-row > button:hover,
+.t-theme-message .t-message-row > button:focus {
+  color: #0761d1;
+}
+
+.t-theme-message .t-message-row > button:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 2px rgba(0 125 249 / 50%);
+}
+
+@media (hover: hover) {
+  .t-theme-message .t-message-row > button {
+    visibility: hidden;
+  }
+
+  .t-theme-message .t-message-row:hover > button,
+  .t-theme-message .t-message-row:focus-within > button {
+    visibility: visible;
+  }
+}
+
+@media (hover: none) {
+  /*
+  On iOS, any changes to a page when the user taps on a clickable item will result
+  in the click event not being triggered. (https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/HandlingEvents/HandlingEvents.html)
+
+  Since tapping also counts as "hover", mounting the MessageActionButton on hover would
+  mean that users tapping on a hyperlink would have to double tap it for it to register
+  the click and navigate.
+
+  Transitioning from `visibility: hidden` to `visibility: visible` on "hover" causes the above issue.
+  Similarly, using `opacity: 0` will exhibit the same behaviour.
+  */
+  .t-theme-message .t-message-row > button {
+    opacity: 0.0001%;
+  }
+
+  .t-theme-message .t-message-row:hover > button,
+  .t-theme-message .t-message-row:focus-within > button {
+    opacity: 100%;
+  }
+}
+
+.t-message-action-menu-button .t-action-menu-icon {
+  width: 1.143em;
+  height: 1.143em;
+}
+
+.t-theme-message .t-emoji-reactions {
+  margin-top: 0.25em;
+  margin-bottom: 0.5em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
+}
+
+.t-theme-message[t-sender="currentUser"] .t-emoji-reactions {
+  justify-content: flex-end;
+  margin-right: 3.5em;
+}
+
+.t-theme-message[t-sender="other"] .t-emoji-reactions {
+  margin-left: 3.5em;
+}
+
+.t-theme-message .t-reaction-button {
+  border: 1px solid transparent;
+  margin: 0;
+  padding: 0.2em 0.55em;
+  border-radius: 8em;
+  background-color: #e8ecee;
+}
+
+.t-theme-message .t-reaction-button[t-active] {
+  background: #1e60e1;
+  border: 1px solid transparent;
+  color: white;
+}
+.t-theme-message .t-reaction-button[t-active]:hover {
+  background: #1e60e1;
+  border: 1px solid transparent;
+}
+
+.t-theme-message .t-reaction-button span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.t-theme-message .t-reaction-button .t-emoji {
+  font-size: 1.25eem;
+}
+
+.t-theme-message .t-reaction-button .t-num-reactions {
+  padding-left: 0.25em;
+  font-size: 0.85em;
+}
+
+.t-theme-message .t-reaction-picker {
+  width: 300px;
+  height: 200px;
+  margin: 0 10px;
+  border-radius: 0.75em;
+  border: 1px solid #d4d4d4;
+  overflow: hidden;
+}
+
+.t-theme-message .t-mention {
+  line-height: 1.5;
+  color: inherit;
+  margin: 0;
+  border-radius: 9999px;
+  padding: 0.25rem 0.45rem;
+}
+.t-theme-message .t-mention[t-is-current-user] {
+  font-weight: bold;
+}
+
+.t-theme-message[t-sender="currentUser"] .t-mention {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.t-theme-message[t-sender="currentUser"] .t-mention[t-is-current-user] {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.t-theme-message[t-sender="other"] .t-mention {
+  background-color: rgba(220, 220, 220, 0.5);
+}
+.t-theme-message[t-sender="other"] .t-mention[t-is-current-user] {
+  background-color: rgba(220, 220, 220, 0.9);
+}

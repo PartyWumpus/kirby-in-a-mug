@@ -1,0 +1,11 @@
+.t-theme-location-block {
+  display: contents;
+  min-height: 100px;
+  max-height: 500px;
+}
+
+.t-theme-location-block .t-root {
+  display: block;
+  height: 200px;
+  margin: 0 -1em 0.5em;
+}

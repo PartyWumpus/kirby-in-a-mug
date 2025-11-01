@@ -1,0 +1,20 @@
+.t-theme-referenced-message {
+  display: flex;
+  flex-direction: column;
+}
+
+.t-theme-referenced-message .t-sender-name {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.t-theme-referenced-message .t-content {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 0.165em 0px;
+}
+
+.t-theme-referenced-message .t-content a {
+  color: currentColor;
+}
