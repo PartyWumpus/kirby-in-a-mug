@@ -1,10 +1,11 @@
 import { getTalkSession } from "@talkjs/core";
 import { Chatbox, type ChatboxRef } from "@talkjs/react-components";
 import "@talkjs/react-components/base.css";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import "./App.css";
 import * as myTheme from "./theme";
 import "./theme/index.css";
+import Draggable from "react-draggable";
 
 type Letter = {
   symbol: string;
@@ -123,46 +124,7 @@ function App() {
             style={{ width: "100%" }}
           ></Chatbox>
           <span>score: {score}</span>
-          <div
-            style={{
-              border: "1px white solid",
-              height: "200px",
-              width: "100%",
-            }}
-          >
-            <svg width="100%" height="100%">
-              <g>
-                {Object.entries(keyboard)
-                  .filter(
-                    ([_key, letter]) => letter.globallyPositioned === false
-                  )
-                  .map(([key, letter]) => (
-                    <g
-                      key={key}
-                      style={{
-                        translate: `${letter.position[0]}% ${letter.position[1]}%`,
-                        userSelect: "none",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        onKeyPress(key);
-                      }}
-                    >
-                      <rect width="50" height="50" x="0" y="0"></rect>
-                      <text
-                        width="50"
-                        height="50"
-                        x="7"
-                        y="20"
-                        fontSize="1.5em"
-                        fill="white"
-                      >
-                        {letter.symbol}
-                      </text>
-                    </g>
-                  ))}
-              </g>
-            </svg>
+          <Keeb keyboard={keyboard}/>
 
             {/* TODO */}
             <div
@@ -211,7 +173,6 @@ function App() {
                     </text>
                   </svg>
                 ))}
-            </div>
           </div>
         </>
       ) : (
@@ -226,8 +187,64 @@ function App() {
           </button>
         </>
       )}
+      <UiThingy/>
     </>
   );
+}
+
+function Keeb({keyboard}: {keyboard: Record<string, Letter>}) {
+  return (<div
+            style={{
+              border: "1px white solid",
+              height: "200px",
+              width: "100%",
+            }}
+          >
+            <svg width="100%" height="100%">
+              <g>
+                {Object.entries(keyboard)
+                  .filter(
+                    ([_key, letter]) => letter.globallyPositioned === false
+                  )
+                  .map(([key, letter]) => (
+                    <g
+                      key={key}
+                      style={{
+                        translate: `${letter.position[0]}% ${letter.position[1]}%`,
+                        userSelect: "none",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        onKeyPress(key);
+                      }}
+                    >
+                      <rect width="50" height="50" x="0" y="0"></rect>
+                      <text
+                        width="50"
+                        height="50"
+                        x="7"
+                        y="20"
+                        fontSize="1.5em"
+                        fill="white"
+                      >
+                        {letter.symbol}
+                      </text>
+                    </g>
+                  ))}
+              </g>
+            </svg>
+            </div>)
+
+}
+
+function UiThingy() {
+  const nodeRef = useRef(null)
+  return <Draggable handle="strong" nodeRef={nodeRef}>
+          <div style={{background: "black", width: "100px"}} ref={nodeRef}>
+            <strong><div style={{background: "blue"}}>Drag here</div></strong>
+            <div>You must click my handle to drag me</div>
+          </div>
+        </Draggable>
 }
 
 export default App;
