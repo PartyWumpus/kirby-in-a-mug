@@ -40,7 +40,7 @@
 
 .t-theme-conversation-list-item[t-selected] {
   color: #fff;
-  background-color: #007df9;
+  background-color: #f9000c;
 }
 
 .t-theme-conversation-list-item[t-selected]:focus-visible {

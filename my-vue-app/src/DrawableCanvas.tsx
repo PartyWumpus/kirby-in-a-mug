@@ -11,15 +11,22 @@ export const FabricJSCanvas = (props: { onTimeout: () => void }) => {
   });
 
   useEffect(() => {
+    const colours = ["#f00", "#0f0", "#00f", "#ff0", "#f0f", "#0ff"];
+
+    let keys = Object.keys(colours);
+    const idx = keys[(keys.length * Math.random()) << 0];
     const canvas = new fabric.Canvas(canvasEl.current, {
       isDrawingMode: true,
-      backgroundColor: "#00ff00",
+      backgroundColor: colours[idx],
     });
+
+    keys = keys.filter((item) => item !== idx);
 
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
 
     canvas.freeDrawingBrush.width = 1;
-    canvas.freeDrawingBrush.color = "#ff0000";
+    canvas.freeDrawingBrush.color =
+      colours[keys[(keys.length * Math.random()) << 0]];
     fabricCanvas.current = canvas;
     return () => {
       canvas.dispose();

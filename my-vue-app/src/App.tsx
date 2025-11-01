@@ -422,15 +422,26 @@ function TimerGame({ time }: { time: number }) {
 
 function UiThingy(props: PropsWithChildren<{ title?: string }>) {
   const nodeRef = useRef<HTMLDivElement>(null);
+  const offsets = useRef<[number, number]>([
+    (Math.random() - 0.5) * 600 + 800,
+    Math.random() * 100,
+  ]);
 
-  useEffect(() => {
-    
-  }, []);
+  useEffect(() => {}, []);
 
   return (
-    <Draggable handle="strong" bounds="parent" nodeRef={nodeRef}>
+    <Draggable
+      handle="strong"
+      nodeRef={nodeRef}
+      positionOffset={{ x: offsets.current[0], y: offsets.current[1] }}
+    >
       <div
-        style={{ background: "black", width: "100px", pointerEvents: "all" }}
+        style={{
+          position: "absolute",
+          background: "black",
+          width: "100px",
+          pointerEvents: "all",
+        }}
         ref={nodeRef}
       >
         <strong>

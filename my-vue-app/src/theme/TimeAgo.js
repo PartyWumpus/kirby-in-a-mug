@@ -24,7 +24,7 @@ export function TimeAgo({ timestamp, common }) {
         title=${absoluteDateTimeString}
         aria-description=${time.long}
       >
-        ${time.short}
+        ${"like " + time.long + "ish"}
       </span>
     </span>
   `;
