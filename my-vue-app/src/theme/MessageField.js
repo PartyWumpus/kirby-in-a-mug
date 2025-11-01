@@ -20,14 +20,11 @@ export function MessageField(props) {
     mode === "edit" && !editor.atTextLimit && editor.characterCount > 0,
   );
 
-  const showLocationButton =
-    mode === "send" && editor.isEmpty && permissions.canShareLocation;
+  const showLocationButton = false
 
-  const showAttachmentButton =
-    mode === "send" && editor.isEmpty && permissions.canShareFile;
+  const showAttachmentButton = false
 
-  const showEmojiButton =
-    mode === "send" && device.supportsEmojiPicker && !device.isMobile;
+  const showEmojiButton = false
 
   return html`
     <div className="t-theme-message-field" t-mode=${mode}>
@@ -61,7 +58,7 @@ export function MessageField(props) {
           ${conversation.access === "ReadWrite" &&
           html`
             <div className="t-textbox-column">
-              <${Editor} placeholder=${t.ENTRYBOX_PLACEHOLDER} />
+              <${Editor} placeholder=${t.ENTRYBOX_PLACEHOLDER}/>
 
               <div className="t-button-overlay">
                 ${showLocationButton &&
@@ -126,7 +123,7 @@ export function MessageField(props) {
               <button
                 t-action="save"
                 onClick=${() => editor.send()}
-                disabled=${!canEdit}
+                .disabled=${!canEdit}
               >
                 ${t.SAVE}
               </button>

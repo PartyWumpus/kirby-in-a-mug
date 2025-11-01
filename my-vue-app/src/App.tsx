@@ -1,7 +1,7 @@
 import { getTalkSession } from "@talkjs/core";
 import { Chatbox, type ChatboxRef } from "@talkjs/react-components";
 import "@talkjs/react-components/base.css";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import * as myTheme from "./theme";
 import "./theme/index.css";
@@ -70,8 +70,19 @@ function App() {
     conversation.createIfNotExists();
   }
 
+  useEffect(() => {
+    // Jank!
+    const interval = setInterval(() => {
+      const x = document.querySelector<HTMLDivElement>(".t-editor > div");
+      if (x !== null) {
+        x.contentEditable = "false";
+      }
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
+
   function onKeyPress(key: string) {
-    const x = chatboxRef.current!.querySelector<HTMLParagraphElement>(
+    const x = document.querySelector<HTMLParagraphElement>(
       ".t-editor > div > p"
     )!;
     if (x.getAttribute("data-placeholder") === null) {
@@ -100,13 +111,6 @@ function App() {
     <>
       {username !== "" ? (
         <>
-          <style>
-            {`
-          .t-button-overlay {
-            display: none !important;
-          }
-          `}
-          </style>
           <Chatbox
             ref={chatboxRef}
             host="durhack.talkjs.com"
