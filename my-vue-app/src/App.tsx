@@ -6,11 +6,13 @@ import Draggable from "react-draggable";
 import "./App.css";
 import * as myTheme from "./theme";
 import "./theme/index.css";
+import { words } from "./words";
 
 type Letter = {
   symbol: string;
   position: [number, number];
   globallyPositioned: boolean;
+  rotation?: number;
 };
 
 const appId = "tYrKVjrQ";
@@ -34,7 +36,7 @@ function App() {
 
   useEffect(() => {
     const interval1 = setInterval(() => {
-      randomEvent()
+      randomEvent();
     }, 3000);
 
     return () => {
@@ -77,6 +79,50 @@ function App() {
   });
   const joinButtonRef = useRef<null | HTMLInputElement>(null);
 
+  function triggerRandomDebuff() {
+    const debuffList = [
+      "swapKeys",
+      "rotateKey",
+      //      "hideSymbol",
+      //      "hideCursor",
+    ] as const;
+    const debuff = debuffList[Math.floor(Math.random() * debuffList.length)];
+    switch (debuff) {
+      case "swapKeys": {
+        const [key1, key2] = getPairOfKeys();
+        const keyboab = {
+          ...keyboard,
+          [key1]: { ...keyboard[key2], symbol: keyboard[key1].symbol },
+          [key2]: { ...keyboard[key1], symbol: keyboard[key2].symbol },
+        };
+        setKeyboard(keyboab);
+        break;
+      }
+      case "rotateKey": {
+        const key1 = getRandomKey();
+        const keyboab = {
+          ...keyboard,
+          [key1]: { ...keyboard[key1], rotation: Math.random() * 360 },
+        };
+        setKeyboard(keyboab);
+        break;
+      }
+    }
+  }
+
+  function getRandomKey(): string {
+    const keys = Object.keys(keyboard);
+    return keys[(keys.length * Math.random()) << 0];
+  }
+
+  function getPairOfKeys(): [string, string] {
+    let keys = Object.keys(keyboard);
+    const key1 = keys[(keys.length * Math.random()) << 0];
+    keys = keys.filter((item) => item !== key1);
+    const key2 = keys[(keys.length * Math.random()) << 0];
+    return [key1, key2];
+  }
+
   async function signUp(username: string) {
     const session = getTalkSession({
       // @ts-expect-error wawa
@@ -93,23 +139,30 @@ function App() {
   }
 
   function randomEvent() {
-    const eventList = ["scramble","bopit","musicBox","missingLetter","captcha","drawing","trivia"] as const
+    const eventList = [
+      "scramble",
+      "bopit",
+      "musicBox",
+      "missingLetter",
+      "captcha",
+      "drawing",
+      "trivia",
+    ] as const;
     const newEvent = eventList[Math.floor(Math.random() * eventList.length)];
-    switch (newEvent){
-    case "scramble":
-      scramble() 
-    case "bopit":
-    case "musicBox":
-    case "missingLetter":
-    case "captcha":
-    case "drawing":
-    case "trivia":
+    switch (newEvent) {
+      case "scramble":
+        scramble();
+      case "bopit":
+      case "musicBox":
+      case "missingLetter":
+      case "captcha":
+      case "drawing":
+      case "trivia":
     }
-    
   }
 
-  function scramble(){
-    const wordList = []
+  function scramble() {
+    words;
   }
 
   useEffect(() => {
@@ -190,7 +243,9 @@ function App() {
             <UiThingy title="time remaining">
               <TimerGame time={time} />
             </UiThingy>
-            <UiThingy>waaa</UiThingy>
+            <UiThingy title="do not press">
+              <button onClick={() => triggerRandomDebuff()}></button>
+            </UiThingy>
           </div>
           <Keeb keyboard={keyboard} onKeyPress={onKeyPress} />
 
@@ -217,6 +272,7 @@ function App() {
                     translate: `${letter.position[0]}% ${letter.position[1]}%`,
                     userSelect: "none",
                     cursor: "pointer",
+                    rotate: `${letter.rotation}deg`,
                   }}
                   onClick={() => {
                     onKeyPress(key);
@@ -285,6 +341,8 @@ function Keeb({
                   translate: `${letter.position[0]}% ${letter.position[1]}%`,
                   userSelect: "none",
                   cursor: "pointer",
+                  rotate: `${letter.rotation}deg`,
+                  transformOrigin: "25px 25px",
                 }}
                 onClick={() => {
                   onKeyPress(key);
@@ -329,6 +387,5 @@ function UiThingy(props: PropsWithChildren<{ title?: string }>) {
     </Draggable>
   );
 }
-
 
 export default App;
