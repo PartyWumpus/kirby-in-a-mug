@@ -32,6 +32,16 @@ function App() {
     };
   }, [time]);
 
+  useEffect(() => {
+    const interval1 = setInterval(() => {
+      randomEvent()
+    }, 3000);
+
+    return () => {
+      clearInterval(interval1);
+    };
+  }, []);
+
   const [keyboard, setKeyboard] = useState<Record<string, Letter>>({
     q: { symbol: "q", position: [3, 5], globallyPositioned: false },
     w: { symbol: "w", position: [13, 5], globallyPositioned: false },
@@ -80,6 +90,26 @@ function App() {
 
     const conversation = session.conversation(conversationId);
     conversation.createIfNotExists();
+  }
+
+  function randomEvent() {
+    const eventList = ["scramble","bopit","musicBox","missingLetter","captcha","drawing","trivia"] as const
+    const newEvent = eventList[Math.floor(Math.random() * eventList.length)];
+    switch (newEvent){
+    case "scramble":
+      scramble() 
+    case "bopit":
+    case "musicBox":
+    case "missingLetter":
+    case "captcha":
+    case "drawing":
+    case "trivia":
+    }
+    
+  }
+
+  function scramble(){
+    const wordList = []
   }
 
   useEffect(() => {
@@ -299,5 +329,6 @@ function UiThingy(props: PropsWithChildren<{ title?: string }>) {
     </Draggable>
   );
 }
+
 
 export default App;
