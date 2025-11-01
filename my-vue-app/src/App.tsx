@@ -19,7 +19,18 @@ const conversationId = "the_convo";
 function App() {
   const [username, setUsername] = useState<string>("");
   const [score, setScore] = useState<number>(0);
+  const [time, setTime] = useState(120);
   const chatboxRef = useRef<ChatboxRef | null>(null);
+
+  useEffect(() => {
+    const interval1 = setInterval(() => {
+      setTime(time - 1);
+    }, 1500);
+
+    return () => {
+      clearInterval(interval1);
+    };
+  }, [time]);
 
   const [keyboard, setKeyboard] = useState<Record<string, Letter>>({
     q: { symbol: "q", position: [3, 5], globallyPositioned: false },
@@ -147,7 +158,7 @@ function App() {
               ></iframe>
             </UiThingy>*/}
             <UiThingy title="time remaining">
-              <></>
+              <TimerGame time={time} />
             </UiThingy>
             <UiThingy>waaa</UiThingy>
           </div>
@@ -268,8 +279,8 @@ function Keeb({
   );
 }
 
-function TimerGame() {
-  return;
+function TimerGame({ time }: { time: number }) {
+  return <span>{time}</span>;
 }
 
 function UiThingy(props: PropsWithChildren<{ title?: string }>) {
