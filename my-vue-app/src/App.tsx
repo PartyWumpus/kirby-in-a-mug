@@ -174,7 +174,9 @@ function App() {
     switch (newEvent) {
       case "scramble":
         scramble();
+        break;
       case "bopit":
+        bopit();
       case "musicBox":
       case "missingLetter":
       case "captcha":
@@ -184,7 +186,33 @@ function App() {
   }
 
   function scramble() {
-    words;
+    const randomWord = words[Math.floor(Math.random() * words.length)];
+    const wordArray = randomWord.split("")
+    const scrambledWord = shuffle(wordArray);
+
+
+    function shuffle(array: string[]) {
+      let currentIndex = array.length;
+
+      while (currentIndex != 0) {
+        let randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        [array[currentIndex], array[randomIndex]] = [
+          array[randomIndex],
+          array[currentIndex],
+        ];
+        return array
+      }
+    }
+    return <UiThingy title="Scramble"> {scrambledWord} </UiThingy>;
+  }
+
+  function bopit() {
+    function createImage(){
+      return <UiThingy title="Bop-it"> <img width="100" height="200" src="/assets/bopit.webp" /> </UiThingy>;
+    }
+    const actions = ["Bop It!", "Twist It!", "Pull It!"]
   }
 
   useEffect(() => {
@@ -270,6 +298,9 @@ function App() {
             </UiThingy>
             <UiThingy title="do not press">
               <button onClick={() => triggerRandomDebuff()}></button>
+            </UiThingy>
+            <UiThingy title="random event button">
+              <button onClick={() => randomEvent()}></button>
             </UiThingy>
           </div>
           <Keeb keyboard={keyboard} onKeyPress={onKeyPress} />
