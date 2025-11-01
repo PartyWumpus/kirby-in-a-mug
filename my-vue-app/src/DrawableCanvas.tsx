@@ -11,8 +11,10 @@ export const FabricJSCanvas = () => {
   });
 
   useEffect(() => {
-    const options = {};
-    const canvas = new fabric.Canvas(canvasEl.current, { isDrawingMode: true });
+    const canvas = new fabric.Canvas(canvasEl.current, {
+      isDrawingMode: true,
+      backgroundColor: "#00db16ff",
+    });
 
     canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
 
@@ -25,11 +27,14 @@ export const FabricJSCanvas = () => {
   }, []);
 
   if (time == 0) {
-    const result = fabricCanvas.current?.toBlob({
+    (async () => {
+      const result = await fabricCanvas.current?.toBlob({
+      
         format: "png",
         multiplier: 2,
-      })
-    globalThis.wawa(result)
+      });
+      globalThis.wawa(result);
+    })();
   }
 
   return (

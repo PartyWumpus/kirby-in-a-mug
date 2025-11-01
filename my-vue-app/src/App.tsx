@@ -141,21 +141,22 @@ function App() {
     conversation.createIfNotExists();
 
     globalThis.wawa = async (blob: Blob) => {
+      console.log(blob);
       const file = new File([blob], "pfp.png");
-      const fileToken = await session.uploadImage(file, {
+      console.log(file);
+
+      const fileToken = await session.uploadImage(blob, {
         filename: "pfp.png",
-        width: 640,
-        height: 480,
+        width: 100,
+        height: 100,
       });
 
       conversation.send({
         content: [{ type: "file", fileToken }],
       });
 
-      console.log(fileToken);
-
       session.currentUser.set({
-        photoUrl: "",
+        photoUrl: "wasd",
       });
     };
   }
@@ -187,9 +188,8 @@ function App() {
 
   function scramble() {
     const randomWord = words[Math.floor(Math.random() * words.length)];
-    const wordArray = randomWord.split("")
+    const wordArray = randomWord.split("");
     const scrambledWord = shuffle(wordArray);
-
 
     function shuffle(array: string[]) {
       let currentIndex = array.length;
@@ -202,17 +202,22 @@ function App() {
           array[randomIndex],
           array[currentIndex],
         ];
-        return array
+        return array;
       }
     }
     return <UiThingy title="Scramble"> {scrambledWord} </UiThingy>;
   }
 
   function bopit() {
-    function createImage(){
-      return <UiThingy title="Bop-it"> <img width="100" height="200" src="/assets/bopit.webp" /> </UiThingy>;
+    function createImage() {
+      return (
+        <UiThingy title="Bop-it">
+          {" "}
+          <img width="100" height="200" src="/assets/bopit.webp" />{" "}
+        </UiThingy>
+      );
     }
-    const actions = ["Bop It!", "Twist It!", "Pull It!"]
+    const actions = ["Bop It!", "Twist It!", "Pull It!"];
   }
 
   useEffect(() => {
