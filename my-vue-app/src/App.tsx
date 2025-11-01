@@ -1,11 +1,11 @@
 import { getTalkSession } from "@talkjs/core";
 import { Chatbox, type ChatboxRef } from "@talkjs/react-components";
 import "@talkjs/react-components/base.css";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type PropsWithChildren } from "react";
+import Draggable from "react-draggable";
 import "./App.css";
 import * as myTheme from "./theme";
 import "./theme/index.css";
-import Draggable from "react-draggable";
 
 type Letter = {
   symbol: string;
@@ -91,6 +91,8 @@ function App() {
     } else {
       x.innerText = key;
     }
+    // DEBUG
+    setScore(score + 1);
     /*
     setKeyboard({
       ...keyboard,
@@ -123,56 +125,81 @@ function App() {
             theme={myTheme}
             style={{ width: "100%" }}
           ></Chatbox>
-          <span>score: {score}</span>
-          <Keeb keyboard={keyboard}/>
+          <div
+            style={{
+              position: "absolute",
+              left: "0",
+              top: "0",
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
+            }}
+          >
+            <UiThingy title="score">{score}</UiThingy>
+            {/*<UiThingy title="cookie clicker">
+              <iframe
+                id="inlineFrameExample"
+                title="Inline Frame Example"
+                width="800"
+                height="400"
+                style={{ scale: 0.5, translate: "-200px -100px" }}
+                src="https://orteil.dashnet.org/experiments/cookie/"
+              ></iframe>
+            </UiThingy>*/}
+            <UiThingy title="time remaining">
+              <></>
+            </UiThingy>
+            <UiThingy>waaa</UiThingy>
+          </div>
+          <Keeb keyboard={keyboard} onKeyPress={onKeyPress} />
 
-            {/* TODO */}
-            <div
-              style={{
-                position: "absolute",
-                left: "0",
-                top: "0",
-                width: "100%",
-                height: "100%",
-                pointerEvents: "none",
-              }}
-            >
-              {Object.entries(keyboard)
-                .filter(([_key, letter]) => letter.globallyPositioned === true)
-                .map(([key, letter]) => (
-                  <svg
-                    key={key}
-                    style={{
-                      position: "absolute",
-                      width: "100%",
-                      height: "100%",
-                      translate: `${letter.position[0]}% ${letter.position[1]}%`,
-                      userSelect: "none",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      onKeyPress(key);
-                    }}
+          {/* TODO */}
+          <div
+            style={{
+              position: "absolute",
+              left: "0",
+              top: "0",
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
+            }}
+          >
+            {Object.entries(keyboard)
+              .filter(([_key, letter]) => letter.globallyPositioned === true)
+              .map(([key, letter]) => (
+                <svg
+                  key={key}
+                  style={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    translate: `${letter.position[0]}% ${letter.position[1]}%`,
+                    userSelect: "none",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    onKeyPress(key);
+                  }}
+                >
+                  <rect
+                    width="50"
+                    height="50"
+                    x="0"
+                    y="0"
+                    style={{ pointerEvents: "all" }}
+                  ></rect>
+                  <text
+                    width="50"
+                    height="50"
+                    x="7"
+                    y="20"
+                    fontSize="1.5em"
+                    fill="white"
                   >
-                    <rect
-                      width="50"
-                      height="50"
-                      x="0"
-                      y="0"
-                      style={{ pointerEvents: "all" }}
-                    ></rect>
-                    <text
-                      width="50"
-                      height="50"
-                      x="7"
-                      y="20"
-                      fontSize="1.5em"
-                      fill="white"
-                    >
-                      {letter.symbol}
-                    </text>
-                  </svg>
-                ))}
+                    {letter.symbol}
+                  </text>
+                </svg>
+              ))}
           </div>
         </>
       ) : (
@@ -187,64 +214,79 @@ function App() {
           </button>
         </>
       )}
-      <UiThingy/>
     </>
   );
 }
 
-function Keeb({keyboard}: {keyboard: Record<string, Letter>}) {
-  return (<div
-            style={{
-              border: "1px white solid",
-              height: "200px",
-              width: "100%",
-            }}
-          >
-            <svg width="100%" height="100%">
-              <g>
-                {Object.entries(keyboard)
-                  .filter(
-                    ([_key, letter]) => letter.globallyPositioned === false
-                  )
-                  .map(([key, letter]) => (
-                    <g
-                      key={key}
-                      style={{
-                        translate: `${letter.position[0]}% ${letter.position[1]}%`,
-                        userSelect: "none",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        onKeyPress(key);
-                      }}
-                    >
-                      <rect width="50" height="50" x="0" y="0"></rect>
-                      <text
-                        width="50"
-                        height="50"
-                        x="7"
-                        y="20"
-                        fontSize="1.5em"
-                        fill="white"
-                      >
-                        {letter.symbol}
-                      </text>
-                    </g>
-                  ))}
+function Keeb({
+  keyboard,
+  onKeyPress,
+}: {
+  keyboard: Record<string, Letter>;
+  onKeyPress: (key: string) => void;
+}) {
+  return (
+    <div
+      style={{
+        border: "1px white solid",
+        height: "200px",
+        width: "100%",
+      }}
+    >
+      <svg width="100%" height="100%">
+        <g>
+          {Object.entries(keyboard)
+            .filter(([_key, letter]) => letter.globallyPositioned === false)
+            .map(([key, letter]) => (
+              <g
+                key={key}
+                style={{
+                  translate: `${letter.position[0]}% ${letter.position[1]}%`,
+                  userSelect: "none",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  onKeyPress(key);
+                }}
+              >
+                <rect width="50" height="50" x="0" y="0"></rect>
+                <text
+                  width="50"
+                  height="50"
+                  x="7"
+                  y="20"
+                  fontSize="1.5em"
+                  fill="white"
+                >
+                  {letter.symbol}
+                </text>
               </g>
-            </svg>
-            </div>)
-
+            ))}
+        </g>
+      </svg>
+    </div>
+  );
 }
 
-function UiThingy() {
-  const nodeRef = useRef(null)
-  return <Draggable handle="strong" nodeRef={nodeRef}>
-          <div style={{background: "black", width: "100px"}} ref={nodeRef}>
-            <strong><div style={{background: "blue"}}>Drag here</div></strong>
-            <div>You must click my handle to drag me</div>
-          </div>
-        </Draggable>
+function TimerGame() {
+  return;
+}
+
+function UiThingy(props: PropsWithChildren<{ title?: string }>) {
+  const nodeRef = useRef(null);
+  return (
+    <Draggable handle="strong" bounds="parent" nodeRef={nodeRef}>
+      <div
+        style={{ background: "black", width: "100px", pointerEvents: "all" }}
+        ref={nodeRef}
+      >
+        <strong>
+          <div style={{ background: "blue" }}>{props.title ?? "Drag me"}</div>
+        </strong>
+        <div>{props.children}</div>
+      </div>
+    </Draggable>
+  );
 }
 
 export default App;

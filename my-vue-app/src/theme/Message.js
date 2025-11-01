@@ -1,10 +1,10 @@
 import {
-  html,
-  PopoverButton,
-  getRandomColor,
-  MessageContent,
-  ReactionPicker,
   getPhotoUrlWithFallback,
+  getRandomColor,
+  html,
+  MessageContent,
+  PopoverButton,
+  ReactionPicker,
 } from "@talkjs/react-components/theming";
 /** @import { MessageProps } from "@talkjs/react-components/theming"; */
 
@@ -14,15 +14,13 @@ export function Message(props) {
   const { currentUser, theme, participants, chatbox, t } = common;
   const { Avatar, Icon, ReferencedMessage, TimeAgo, MessageActionMenu } = theme;
 
-  const isGroupChat = participants.length >= 3;
+  const isGroupChat = true;
   const sender = message.sender;
 
   const isMe = sender?.id === currentUser.id;
   const showAuthor = !isMe && isGroupChat;
   const referencedMessage = message.referencedMessage;
-  const showActionMenu =
-    messageStatus !== "sending" &&
-    (permissions.canReplyToMessage || permissions.canDeleteMessage);
+  const showActionMenu = false;
 
   let senderType;
   if (!sender) {
@@ -87,7 +85,7 @@ export function Message(props) {
               <${Icon} className="t-action-menu-icon" type="horizontalDots" />
             </${PopoverButton}>
           `}
-        ${permissions.canAddReaction &&
+        ${false &&
         html`
           <${PopoverButton}
             className="t-add-reaction-button"
