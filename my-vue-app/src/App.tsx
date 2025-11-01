@@ -13,6 +13,8 @@ import "./App.css";
 import { FabricJSCanvas } from "./DrawableCanvas";
 import * as myTheme from "./theme";
 import "./theme/index.css";
+import puppetImage from './assets/puppet.webp'
+import bopitImage from './assets/bopit.webp'
 import { words } from "./words";
 
 type Letter = {
@@ -175,33 +177,6 @@ function App() {
     setPopups({ ...popups, [crypto.randomUUID()]: newEvent });
   }
 
-  function bopit() {
-    const actions = ["Bop It!", "Twist It!", "Pull It!"];
-    const chosen = actions[Math.floor(Math.random() * actions.length)];
-    return (
-      <UiThingy title={chosen}>
-        {" "}
-        <img width="100" height="200" src="/assets/bopit.webp" />
-        <button>bop</button>
-        <button>twist</button>
-        <button>pull</button>
-      </UiThingy>
-    );
-  }
-
-  function musicBox() {
-    <UiThingy title="Wind the box!">
-      {" "}
-      <img width="100" height="200" src="/assets/puppet.webp" />{" "}
-    </UiThingy>;
-    var fail = false;
-    var existTime = 200;
-    var timeLeft = 10;
-    if (timeLeft <= 0) {
-      fail = true;
-    }
-  }
-
   useEffect(() => {
     // Jank!
     const interval = setInterval(() => {
@@ -296,11 +271,23 @@ function App() {
                   elem = <Scramble />;
                   break;
                 case "bopit":
+                  elem = <Bopit />;
+                  break;
                 case "musicBox":
+                  //elem = <MusicBox />;
+                  break;
                 case "missingLetter":
+                  //elem = <MissingLetter />;
+                  break;
                 case "captcha":
+                  //elem = <Captcha />;
+                  break;
                 case "drawing":
+                  //elem = <Drawing />;
+                  break;
                 case "trivia":
+                  //elem = <Trivia />;
+                  break;
               }
               return <Fragment key={id}>{elem}</Fragment>;
             })}
@@ -466,6 +453,33 @@ function Scramble() {
     }
   }
   return <UiThingy title="Scramble"> {scrambledWord.current} </UiThingy>;
+}
+
+function Bopit() {
+  const actions = ["Bop It!", "Twist It!", "Pull It!"];
+  const chosen = useRef(actions[Math.floor(Math.random() * actions.length)]);
+  return (
+    <UiThingy title={chosen.current}>
+      <img width="100" height="200" src={bopitImage} />
+      <button>bop</button>
+      <button>twist</button>
+      <button>pull</button>
+    </UiThingy>
+  );
+}
+
+
+
+function MusicBox() {
+  <UiThingy title="Wind the box!">
+    <img width="100" height="200" src={puppetImage} />{" "}
+  </UiThingy>;
+  var fail = false;
+  var existTime = 200;
+  var timeLeft = 10;
+  if (timeLeft <= 0) {
+    fail = true;
+  }
 }
 
 export default App;
