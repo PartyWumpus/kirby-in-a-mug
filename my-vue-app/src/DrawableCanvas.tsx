@@ -1,7 +1,7 @@
 import * as fabric from "fabric"; // v6
 import { useEffect, useRef, useState } from "react";
 
-export const FabricJSCanvas = () => {
+export const FabricJSCanvas = (props: { onTimeout: () => void }) => {
   const canvasEl = useRef<HTMLCanvasElement>(null);
   const fabricCanvas = useRef<fabric.Canvas>(null);
   const [time, setTime] = useState(15);
@@ -33,6 +33,7 @@ export const FabricJSCanvas = () => {
         multiplier: 2,
       });
       globalThis.wawa(result);
+      props.onTimeout();
     })();
   }
 

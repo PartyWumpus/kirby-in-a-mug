@@ -10,11 +10,11 @@ import {
 } from "react";
 import Draggable from "react-draggable";
 import "./App.css";
+import bopitImage from "./assets/bopit.webp";
+import puppetImage from "./assets/puppet.webp";
 import { FabricJSCanvas } from "./DrawableCanvas";
 import * as myTheme from "./theme";
 import "./theme/index.css";
-import puppetImage from './assets/puppet.webp'
-import bopitImage from './assets/bopit.webp'
 import { words } from "./words";
 
 type Letter = {
@@ -90,7 +90,7 @@ function App() {
     ".": { symbol: ".", position: [80, 70], globallyPositioned: false },
     "?": { symbol: "?", position: [90, 70], globallyPositioned: false },
   });
-  const joinButtonRef = useRef<null | HTMLInputElement>(null);
+  const joinButtonRef = useRef<HTMLInputElement>(null);
 
   function triggerRandomDebuff() {
     const debuffList = [
@@ -252,9 +252,6 @@ function App() {
                 src="https://orteil.dashnet.org/experiments/cookie/"
               ></iframe>
             </UiThingy>*/}
-            <UiThingy title="Draw a new PFP">
-              <FabricJSCanvas />
-            </UiThingy>
             <UiThingy title="time remaining">
               <TimerGame time={time} />
             </UiThingy>
@@ -265,13 +262,20 @@ function App() {
               <button onClick={() => randomEvent()}></button>
             </UiThingy>
             {Object.entries(popups).map(([id, flavor]) => {
-              let elem = <span style={{ color: "red" }}>error</span>;
+              let elem = <span></span>;
+              const deleter = () => {
+                setPopups(
+                  Object.fromEntries(
+                    Object.entries(popups).filter(([i]) => i !== id)
+                  )
+                );
+              };
               switch (flavor) {
                 case "scramble":
                   elem = <Scramble />;
                   break;
                 case "bopit":
-                  elem = <Bopit />;
+                  elem = <BopIt deleter={deleter} />;
                   break;
                 case "musicBox":
                   //elem = <MusicBox />;
@@ -283,7 +287,7 @@ function App() {
                   //elem = <Captcha />;
                   break;
                 case "drawing":
-                  //elem = <Drawing />;
+                  elem = <Drawing deleter={deleter} />;
                   break;
                 case "trivia":
                   //elem = <Trivia />;
@@ -417,7 +421,12 @@ function TimerGame({ time }: { time: number }) {
 }
 
 function UiThingy(props: PropsWithChildren<{ title?: string }>) {
-  const nodeRef = useRef(null);
+  const nodeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    
+  }, []);
+
   return (
     <Draggable handle="strong" bounds="parent" nodeRef={nodeRef}>
       <div
@@ -455,20 +464,42 @@ function Scramble() {
   return <UiThingy title="Scramble"> {scrambledWord.current} </UiThingy>;
 }
 
-function Bopit() {
-  const actions = ["Bop It!", "Twist It!", "Pull It!"];
+function BopIt({ deleter }: { deleter: () => void }) {
+  const actions = ["Bop It!", "Twist It!", "Pull It!"] as const;
   const chosen = useRef(actions[Math.floor(Math.random() * actions.length)]);
   return (
     <UiThingy title={chosen.current}>
       <img width="100" height="200" src={bopitImage} />
-      <button>bop</button>
-      <button>twist</button>
-      <button>pull</button>
+      <button
+        onClick={() => {
+          if (chosen.current == "Bop It!") {
+            deleter();
+          }
+        }}
+      >
+        bop
+      </button>
+      <button
+        onClick={() => {
+          if (chosen.current == "Twist It!") {
+            deleter();
+          }
+        }}
+      >
+        twist
+      </button>
+      <button
+        onClick={() => {
+          if (chosen.current == "Pull It!") {
+            deleter();
+          }
+        }}
+      >
+        pull
+      </button>
     </UiThingy>
   );
 }
-
-
 
 function MusicBox() {
   <UiThingy title="Wind the box!">
@@ -480,6 +511,14 @@ function MusicBox() {
   if (timeLeft <= 0) {
     fail = true;
   }
+}
+
+function Drawing({ deleter }: { deleter: () => void }) {
+  return (
+    <UiThingy title="Draw a new PFP">
+      <FabricJSCanvas onTimeout={deleter} />
+    </UiThingy>
+  );
 }
 
 export default App;
