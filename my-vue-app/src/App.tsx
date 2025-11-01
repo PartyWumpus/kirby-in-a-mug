@@ -1,9 +1,10 @@
-import { getTalkSession } from "@talkjs/core";
+import { getTalkSession, type TalkSession } from "@talkjs/core";
 import { Chatbox, type ChatboxRef } from "@talkjs/react-components";
 import "@talkjs/react-components/base.css";
 import { useEffect, useRef, useState, type PropsWithChildren } from "react";
 import Draggable from "react-draggable";
 import "./App.css";
+import { FabricJSCanvas } from "./DrawableCanvas";
 import * as myTheme from "./theme";
 import "./theme/index.css";
 import { words } from "./words";
@@ -22,7 +23,8 @@ function App() {
   const [username, setUsername] = useState<string>("");
   const [score, setScore] = useState<number>(0);
   const [time, setTime] = useState(120);
-  const chatboxRef = useRef<ChatboxRef | null>(null);
+  const chatboxRef = useRef<ChatboxRef>(null);
+  const sessionRef = useRef<TalkSession>(null);
 
   useEffect(() => {
     const interval1 = setInterval(() => {
@@ -130,12 +132,32 @@ function App() {
       appId,
       userId: username,
     });
+    sessionRef.current = session;
 
     await session.currentUser.createIfNotExists({ name: username });
     setUsername(username);
 
     const conversation = session.conversation(conversationId);
     conversation.createIfNotExists();
+
+    globalThis.wawa = async (blob: Blob) => {
+      const file = new File([blob], "pfp.png");
+      const fileToken = await session.uploadImage(file, {
+        filename: "pfp.png",
+        width: 640,
+        height: 480,
+      });
+
+      conversation.send({
+        content: [{ type: "file", fileToken }],
+      });
+
+      console.log(fileToken);
+
+      session.currentUser.set({
+        photoUrl: "",
+      });
+    };
   }
 
   function randomEvent() {
@@ -217,7 +239,7 @@ function App() {
             chatHeaderVisible={false}
             enterSendsMessage={false}
             theme={myTheme}
-            style={{ width: "100%" }}
+            style={{ width: "100%", borderRadius: "0" }}
           ></Chatbox>
           <div
             style={{
@@ -240,6 +262,9 @@ function App() {
                 src="https://orteil.dashnet.org/experiments/cookie/"
               ></iframe>
             </UiThingy>*/}
+            <UiThingy title="Draw a new PFP">
+              <FabricJSCanvas />
+            </UiThingy>
             <UiThingy title="time remaining">
               <TimerGame time={time} />
             </UiThingy>
