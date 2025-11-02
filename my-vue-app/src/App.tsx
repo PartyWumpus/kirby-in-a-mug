@@ -876,7 +876,7 @@ function Clippy() {
     "Would you like to send a fax?",
     "Please refill your printer ink!",
     "Who needs AI when you have Clippy!",
-    "This is what ozempic does to people!",
+    "This is what comp sci does to people!",
     "Let's go gambling!",
     "I miss my wife",
   ];
