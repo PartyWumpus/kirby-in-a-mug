@@ -64,6 +64,7 @@ function App() {
   const [username, setUsername] = useState<string>("");
   const [score, setScore] = useState<number>(0);
   const [time, setTime] = useState(120);
+  const [bannedKey, setBan] = useState<string>("");
   const [popups, setPopups] = useState<
     Record<string, (typeof eventList)[number]>
   >({});
@@ -79,6 +80,10 @@ function App() {
       clearInterval(interval1);
     };
   }, [time]);
+
+  function punish(penalty: number){
+    setTime(time - penalty);
+  }
 
   const [keyboard, setKeyboard] = useState<Record<string, Letter>>({
     q: { symbol: "q", position: [3, 5], globallyPositioned: false },
@@ -209,6 +214,10 @@ function App() {
   }, []);
 
   function onKeyPress(key: string) {
+    if (key === bannedKey){
+      punish(5)
+      
+    }
     const x = document.querySelector<HTMLParagraphElement>(
       ".t-editor > div > p"
     )!;
@@ -303,7 +312,7 @@ function App() {
                   elem = <MusicBox deleter={deleter} />;
                   break;
                 case "missingLetter":
-                  //elem = <MissingLetter />;
+                  elem = <MissingLetter deleter={deleter} setBan={setBan}/>;
                   break;
                 case "captcha":
                   //elem = <Captcha />;
@@ -600,6 +609,45 @@ function Drawing({ deleter }: { deleter: () => void }) {
   return (
     <UiThingy title="Draw a new PFP">
       <FabricJSCanvas onTimeout={deleter} />
+    </UiThingy>
+  );
+}
+
+
+function MissingLetter({ deleter, setBan }: { deleter: (x: number) => void, setBan: (x: string) => void }){
+  const letterList = ["e", "t", "a", "o", "i", "n", "s", "h", "r", "l"]
+  const randomLetter = useRef(letterList[Math.floor(Math.random() * letterList.length)])
+  const [time, setTime] = useState(30);
+
+  useEffect(() => {
+    const interval1 = setInterval(() => {
+      setTime(time - 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval1);
+    };
+  }, [time]);
+
+  useEffect(() => {
+    setBan(randomLetter.current)
+
+    return () => {
+      setBan('')
+    }
+  }, [])
+
+  if (time <= 0){
+    deleter(30)
+  }
+
+  
+
+  return (
+    <UiThingy title="disabled letter">
+      <span>{time}s</span>
+      <br/>
+      <span>{randomLetter.current} is disabled</span>
     </UiThingy>
   );
 }
