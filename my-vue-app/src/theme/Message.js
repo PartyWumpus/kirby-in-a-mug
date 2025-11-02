@@ -22,6 +22,10 @@ export function Message(props) {
   const referencedMessage = message.referencedMessage;
   const showActionMenu = false;
 
+  if (sender.name === "server") {
+    return html`<div></div>`
+  }
+
   let senderType;
   if (!sender) {
     senderType = "system";

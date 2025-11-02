@@ -11,10 +11,10 @@ import {
 } from "react";
 import Draggable from "react-draggable";
 import "./App.css";
+import puppetJumpscare from "./assets/anobg.gif";
 import bopitImage from "./assets/bopit.webp";
 import hourglass from "./assets/hourglass.gif";
 import puppetImage from "./assets/puppet.webp";
-import puppetJumpscare from "./assets/anobg.gif";
 import { FabricJSCanvas } from "./DrawableCanvas";
 import * as myTheme from "./theme";
 import "./theme/index.css";
@@ -73,6 +73,7 @@ function App() {
   >({});
   const chatboxRef = useRef<ChatboxRef>(null);
   const sessionRef = useRef<TalkSession>(null);
+  const messageIdRef = useRef<string>("not-an-id");
 
   useEffect(() => {
     const interval1 = setInterval(() => {
@@ -83,6 +84,22 @@ function App() {
       clearInterval(interval1);
     };
   }, [time]);
+
+  useEffect(() => {
+    const interval1 = setInterval(() => {
+      if (username === "server") {
+        const newEvent =
+          eventList[Math.floor(Math.random() * eventList.length)];
+        sessionRef
+          .current!.conversation(conversationId)
+          .send({ text: newEvent });
+      }
+    }, 5000);
+
+    return () => {
+      clearInterval(interval1);
+    };
+  }, [username]);
 
   function punish(penalty: number) {
     setTime(time - penalty);
@@ -175,22 +192,8 @@ function App() {
 
     await session.currentUser.createIfNotExists({ name: username });
 
-    setUsername(username);
-
     const conversation = session.conversation(conversationId);
     conversation.createIfNotExists();
-    conversation.subscribeMessages((a) => {
-      if (a !== null) {
-        const lastMessage = a[0];
-        if (
-          lastMessage.sender?.id === session.currentUser.id &&
-          lastMessage.content[0]?.type === "file" &&
-          lastMessage.content[0].filename === "pfp.png"
-        ) {
-          session.currentUser.set({ photoUrl: lastMessage.content[0].url });
-        }
-      }
-    });
 
     globalThis.wawa = async (blob: Blob) => {
       const fileToken = await session.uploadImage(blob, {
@@ -203,7 +206,46 @@ function App() {
         content: [{ type: "file", fileToken }],
       });
     };
+
+    setUsername(username);
   }
+
+  useEffect(() => {
+    if (sessionRef.current) {
+      const conversation = sessionRef.current!.conversation(conversationId);
+      conversation.createIfNotExists();
+      const subscriber = conversation.subscribeMessages((a) => {
+        if (a !== null) {
+          const lastMessage = a[0];
+          if (
+            lastMessage.sender?.id === sessionRef.current!.currentUser.id &&
+            lastMessage.content[0]?.type === "file" &&
+            lastMessage.content[0].filename === "pfp.png"
+          ) {
+            sessionRef.current!.currentUser.set({
+              photoUrl: lastMessage.content[0].url,
+            });
+          }
+
+          if (
+            lastMessage.sender?.name === "server" &&
+            lastMessage.content[0]?.type === "text" &&
+            messageIdRef.current != lastMessage.id
+          ) {
+            messageIdRef.current = lastMessage.id;
+            const eventType = lastMessage.plaintext;
+            setPopups({
+              ...popups,
+              [crypto.randomUUID()]: eventType as (typeof eventList)[number],
+            });
+          }
+        }
+      });
+      return () => {
+        subscriber.unsubscribe();
+      };
+    }
+  }, [popups, username]);
 
   function randomEvent() {
     const newEvent = eventList[Math.floor(Math.random() * eventList.length)];
@@ -248,9 +290,6 @@ function App() {
     });
     */
   }
-
-  // DEBUG
-  signUp("qwert");
 
   return (
     <>
@@ -617,7 +656,18 @@ function MusicBox({ deleter }: { deleter: (x: number) => void }) {
 
   if (timeLeft <= 0) {
     setTimeout(() => deleter(-30), 1000);
-    return <img style={{zIndex: 9999, position: "absolute", top: "0", left: "0", width: "100%"}} src={puppetJumpscare} />;
+    return (
+      <img
+        style={{
+          zIndex: 9999,
+          position: "absolute",
+          top: "0",
+          left: "0",
+          width: "100%",
+        }}
+        src={puppetJumpscare}
+      />
+    );
   }
 
   if (time <= 0) {
