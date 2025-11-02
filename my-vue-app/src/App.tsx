@@ -37,6 +37,16 @@ const eventList = [
   "trivia",
 ] as const;
 
+const debuffList = [
+  "swapKeys",
+  "rotateKey",
+  "changeFont",
+  //      "hideSymbol",
+  //      "hideCursor",
+] as const;
+
+let globalCounter = 0;
+
 function App() {
   const [username, setUsername] = useState<string>("");
   const [score, setScore] = useState<number>(0);
@@ -93,12 +103,6 @@ function App() {
   const joinButtonRef = useRef<HTMLInputElement>(null);
 
   function triggerRandomDebuff() {
-    const debuffList = [
-      "swapKeys",
-      "rotateKey",
-      //      "hideSymbol",
-      //      "hideCursor",
-    ] as const;
     const debuff = debuffList[Math.floor(Math.random() * debuffList.length)];
     switch (debuff) {
       case "swapKeys": {
@@ -119,6 +123,9 @@ function App() {
         };
         setKeyboard(keyboab);
         break;
+      }
+      case "changeFont": {
+        window.document.body.style.fontFamily = "cursive !important";
       }
     }
   }
@@ -263,12 +270,14 @@ function App() {
             </UiThingy>
             {Object.entries(popups).map(([id, flavor]) => {
               let elem = <span></span>;
-              const deleter = () => {
+              const deleter = (x?: number) => {
                 setPopups(
                   Object.fromEntries(
                     Object.entries(popups).filter(([i]) => i !== id)
                   )
                 );
+                setTime(time + (x ?? 0));
+                setScore(score + Math.max(x ?? 0, 0));
               };
               switch (flavor) {
                 case "scramble":
@@ -278,7 +287,7 @@ function App() {
                   elem = <BopIt deleter={deleter} />;
                   break;
                 case "musicBox":
-                  elem = <MusicBox deleter={deleter}/>;
+                  elem = <MusicBox deleter={deleter} />;
                   break;
                 case "missingLetter":
                   //elem = <MissingLetter />;
@@ -420,26 +429,29 @@ function TimerGame({ time }: { time: number }) {
   return <span>{time}</span>;
 }
 
-function UiThingy(props: PropsWithChildren<{ title?: string, width?: number }>) {
+function UiThingy(
+  props: PropsWithChildren<{ title?: string; width?: number }>
+) {
   const nodeRef = useRef<HTMLDivElement>(null);
   const offsets = useRef<[number, number]>([
     (Math.random() - 0.5) * 600 + 800,
     Math.random() * 100,
   ]);
 
-  useEffect(() => {}, []);
-
   return (
     <Draggable
       handle="strong"
       nodeRef={nodeRef}
       positionOffset={{ x: offsets.current[0], y: offsets.current[1] }}
+      onStart={() => {
+        nodeRef.current!.style.zIndex = `${globalCounter++}`;
+      }}
     >
       <div
         style={{
           position: "absolute",
           background: "black",
-          width: `${props.width ?? 100 }px`,
+          width: `${props.width ?? 100}px`,
           pointerEvents: "all",
         }}
         ref={nodeRef}
@@ -475,7 +487,7 @@ function Scramble() {
   return <UiThingy title="Scramble"> {scrambledWord.current} </UiThingy>;
 }
 
-function BopIt({ deleter }: { deleter: () => void }) {
+function BopIt({ deleter }: { deleter: (x: number) => void }) {
   const actions = ["Bop It!", "Twist It!", "Pull It!"] as const;
   const chosen = useRef(actions[Math.floor(Math.random() * actions.length)]);
   return (
@@ -484,7 +496,9 @@ function BopIt({ deleter }: { deleter: () => void }) {
       <button
         onClick={() => {
           if (chosen.current == "Bop It!") {
-            deleter();
+            deleter(30);
+          } else {
+            deleter(-10);
           }
         }}
       >
@@ -493,7 +507,9 @@ function BopIt({ deleter }: { deleter: () => void }) {
       <button
         onClick={() => {
           if (chosen.current == "Twist It!") {
-            deleter();
+            deleter(30);
+          } else {
+            deleter(-10);
           }
         }}
       >
@@ -502,7 +518,9 @@ function BopIt({ deleter }: { deleter: () => void }) {
       <button
         onClick={() => {
           if (chosen.current == "Pull It!") {
-            deleter();
+            deleter(29);
+          } else {
+            deleter(-10);
           }
         }}
       >
@@ -512,14 +530,14 @@ function BopIt({ deleter }: { deleter: () => void }) {
   );
 }
 
-function MusicBox({ deleter }: { deleter: () => void }) {
+function MusicBox({ deleter }: { deleter: (x: number) => void }) {
   const [time, setTime] = useState(200);
-  const [timeLeft,setTime2] = useState(10);
+  const [timeLeft, setTime2] = useState(10);
 
   useEffect(() => {
     const interval1 = setInterval(() => {
       setTime(time - 1);
-      setTime2(timeLeft - 1)
+      setTime2(timeLeft - 1);
     }, 1000);
 
     return () => {
@@ -528,20 +546,24 @@ function MusicBox({ deleter }: { deleter: () => void }) {
   }, [time, timeLeft]);
 
   if (timeLeft <= 0) {
-    deleter();
-  if (time == 0){
-    deleter()
-  }
+    deleter(-30);
+    if (time == 0) {
+      deleter(20);
+    }
   }
   return (
     <UiThingy title="Wind the box!" width={500}>
-    <span>{timeLeft}s</span>
-    <img width="500" height="200" src={puppetImage} />
-    <button onClick={()=>{
-      setTime2(Math.min(timeLeft + 5, 30))
-    }}>wind</button>
-  </UiThingy>
-  )
+      <span>{timeLeft}s</span>
+      <img width="500" height="200" src={puppetImage} />
+      <button
+        onClick={() => {
+          setTime2(Math.min(timeLeft + 5, 30));
+        }}
+      >
+        wind
+      </button>
+    </UiThingy>
+  );
 }
 
 function Drawing({ deleter }: { deleter: () => void }) {
