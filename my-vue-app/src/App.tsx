@@ -14,6 +14,7 @@ import "./App.css";
 import bopitImage from "./assets/bopit.webp";
 import hourglass from "./assets/hourglass.gif";
 import puppetImage from "./assets/puppet.webp";
+import puppetJumpscare from "./assets/anobg.gif";
 import { FabricJSCanvas } from "./DrawableCanvas";
 import * as myTheme from "./theme";
 import "./theme/index.css";
@@ -615,11 +616,14 @@ function MusicBox({ deleter }: { deleter: (x: number) => void }) {
   }, [time, timeLeft]);
 
   if (timeLeft <= 0) {
-    deleter(-30);
-    if (time == 0) {
-      deleter(20);
-    }
+    setTimeout(() => deleter(-30), 1000);
+    return <img style={{zIndex: 9999, position: "absolute", top: "0", left: "0", width: "100%"}} src={puppetJumpscare} />;
   }
+
+  if (time <= 0) {
+    deleter(20);
+  }
+
   return (
     <UiThingy title="Wind the box!" width={500}>
       <Progress max={30} current={timeLeft} />
