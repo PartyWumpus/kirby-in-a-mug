@@ -12,6 +12,7 @@ import {
 import Draggable from "react-draggable";
 import "./App.css";
 import bopitImage from "./assets/bopit.webp";
+import hourglass from "./assets/hourglass.gif";
 import puppetImage from "./assets/puppet.webp";
 import { FabricJSCanvas } from "./DrawableCanvas";
 import * as myTheme from "./theme";
@@ -448,6 +449,7 @@ function TimerGame({ time }: { time: number }) {
   return (
     <UiThingy title="time remaining" warning={time < 30}>
       <span>{time}</span>
+      <img src={hourglass} height="20px" />
     </UiThingy>
   );
 }
