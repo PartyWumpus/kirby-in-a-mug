@@ -55,9 +55,7 @@ const eventList = [
 const debuffList = [
   "swapKeys",
   "rotateKey",
-  "changeFont",
-  //      "hideSymbol",
-  //      "hideCursor",
+  "hideCursor",
 ] as const;
 
 declare global {
@@ -191,8 +189,8 @@ function App() {
         setKeyboard(keyboab);
         break;
       }
-      case "changeFont": {
-        window.document.body.style.fontFamily = "cursive !important";
+      case "hideCursor": {
+        
       }
     }
   }
