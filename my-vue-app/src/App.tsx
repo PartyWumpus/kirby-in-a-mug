@@ -198,7 +198,7 @@ function App() {
         break;
       }
       case "hideCursor": {
-        document.documentElement.style.cursor = 'none'; 
+        document.documentElement.style.cursor = "none";
       }
     }
   }
@@ -545,6 +545,7 @@ function Keeb({
                   rotate: `${letter.rotation}deg`,
                   transformOrigin: "25px 25px",
                   width: "50px",
+                  fontSize: "22px",
                   height: "50px",
                 }}
                 onClick={() => {
@@ -576,6 +577,7 @@ function Keeb({
                   rotate: `${letter.rotation}deg`,
                   transformOrigin: "25px 25px",
                   width: "50px",
+                  fontSize: "22px",
                   height: "50px",
                 }}
                 onClick={() => {
@@ -607,6 +609,7 @@ function Keeb({
                   rotate: `${letter.rotation}deg`,
                   transformOrigin: "center",
                   width: "50px",
+                  fontSize: "22px",
                   height: "50px",
                 }}
                 onClick={() => {
