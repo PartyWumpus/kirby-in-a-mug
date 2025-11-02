@@ -335,6 +335,7 @@ function App() {
             <UiThingy title="random event button">
               <button onClick={() => randomEvent()}></button>
             </UiThingy>
+            <Clippy />
             {Object.entries(popups).map(([id, flavor]) => {
               let elem = <span></span>;
               const deleter = (x?: number) => {
@@ -508,6 +509,7 @@ function UiThingy(
     title?: string;
     width?: number;
     warning?: boolean;
+    onClose?: () => void;
   }>
 ) {
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -548,7 +550,7 @@ function UiThingy(
           <div className="title-bar-controls">
             <button aria-label="Minimize" />
             <button aria-label="Maximize" />
-            <button aria-label="Close" />
+            <button aria-label="Close" onClick={() => props?.onClose?.()} />
           </div>
         </div>
         <div className="window-body">{props.children}</div>
@@ -687,6 +689,55 @@ function MusicBox({ deleter }: { deleter: (x: number) => void }) {
       </button>
     </UiThingy>
   );
+}
+
+function Clippy() {
+  const [time, setTime] = useState(2);
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    const interval1 = setInterval(() => {
+      setTime(time - 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval1);
+    };
+  }, [time]);
+
+  const clippyPhrases = [
+    "Kill Yourself!",
+    "It works on my machine!",
+    "Don't forget to wind the music box!",
+    "Have you eaten today?",
+    "I'm Clipping It.",
+    "Chat can somebody clippy that?",
+    "Would you like help typing?",
+    "I hope you have a cliptastic day!",
+    "Please give me your toenail clippings.",
+    "This is beyond my generation.",
+    "Would you like to send a fax?",
+    "Please refill your printer ink!",
+    "Who needs AI when you have Clippy!",
+  ];
+  const clippyPhrase =
+    useRef(clippyPhrases[Math.floor(Math.random() * clippyPhrases.length)]);
+
+  if (count > 3) {
+    setCount(0)
+    setTime(30)
+    return <></>
+  }
+
+  if (time <= 0) {
+    return (
+      <UiThingy key={count} title="Help from Clippy!" onClose={() => {
+        setCount(count+1)
+        clippyPhrase.current = clippyPhrases[Math.floor(Math.random() * clippyPhrases.length)];
+        }}>
+        Clippy Says: {clippyPhrase.current}
+      </UiThingy>
+    );
+  }
 }
 
 function Drawing({ deleter }: { deleter: () => void }) {
