@@ -70,6 +70,17 @@ globalThis.sentMessage = () => {
   Object.values(messageListeners).forEach((a) => a(x.textContent));
 };
 
+setInterval(() => {
+  if (Math.random() >= 0.95) {
+    window.document.body.style.transition = "rotate 2.5s linear";
+    if (window.document.body.style.rotate !== "360deg") {
+      window.document.body.style.rotate = "360deg";
+    } else {
+      window.document.body.style.rotate = "0deg";
+    }
+  }
+}, 8000);
+
 function App() {
   const [username, setUsername] = useState<string>("");
   const [score, setScore] = useState<number>(0);
