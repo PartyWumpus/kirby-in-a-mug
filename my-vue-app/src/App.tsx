@@ -1,3 +1,4 @@
+import "98.css";
 import { getTalkSession, type TalkSession } from "@talkjs/core";
 import { Chatbox, type ChatboxRef } from "@talkjs/react-components";
 import "@talkjs/react-components/base.css";
@@ -10,7 +11,6 @@ import {
 } from "react";
 import Draggable from "react-draggable";
 import "./App.css";
-import "98.css";
 import bopitImage from "./assets/bopit.webp";
 import puppetImage from "./assets/puppet.webp";
 import { FabricJSCanvas } from "./DrawableCanvas";
@@ -176,12 +176,21 @@ function App() {
 
     const conversation = session.conversation(conversationId);
     conversation.createIfNotExists();
+    conversation.subscribeMessages((a) => {
+      if (a !== null) {
+        const lastMessage = a[0];
+        if (
+          lastMessage.sender?.id === session.currentUser.id &&
+          lastMessage.content[0]?.type === "file" &&
+          lastMessage.content[0].filename === "pfp.png"
+        ) {
+          session.currentUser.set({ photoUrl: lastMessage.content[0].url });
+        }
+      }
+    });
 
+    // Jank!
     globalThis.wawa = async (blob: Blob) => {
-      console.log(blob);
-      const file = new File([blob], "pfp.png");
-      console.log(file);
-
       const fileToken = await session.uploadImage(blob, {
         filename: "pfp.png",
         width: 100,
@@ -190,10 +199,6 @@ function App() {
 
       conversation.send({
         content: [{ type: "file", fileToken }],
-      });
-
-      session.currentUser.set({
-        photoUrl: "wasd",
       });
     };
   }
@@ -226,24 +231,10 @@ function App() {
     } else {
       x.innerText = key;
     }
-    // DEBUG
-    setScore(score + 1);
-    /*
-    setKeyboard({
-      ...keyboard,
-      [key]: {
-        ...letter,
-        position: [
-          letter.position[0] + 1,
-          letter.position[1],
-        ],
-      },
-    });
-    */
   }
 
   // DEBUG
-  signUp("qwert");
+  signUp("qwerty");
 
   return (
     <>
@@ -484,7 +475,9 @@ function UiThingy(
         ref={nodeRef}
       >
         <div className="title-bar">
-          <div className="title-bar-text" style={{userSelect: "none"}}>{props.title ?? "drag me"}</div>
+          <div className="title-bar-text" style={{ userSelect: "none" }}>
+            {props.title ?? "drag me"}
+          </div>
           <div className="title-bar-controls">
             <button aria-label="Minimize" />
             <button aria-label="Maximize" />
@@ -603,7 +596,7 @@ function MusicBox({ deleter }: { deleter: (x: number) => void }) {
   return (
     <UiThingy title="Wind the box!" width={500}>
       <span>{timeLeft}s</span>
-      <img width="500" height="200" src={puppetImage} />
+      <img width="480" height="200" src={puppetImage} />
       <button
         onClick={() => {
           setTime2(Math.min(timeLeft + 5, 30));

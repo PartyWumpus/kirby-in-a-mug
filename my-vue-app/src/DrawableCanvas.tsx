@@ -8,7 +8,20 @@ export const FabricJSCanvas = (props: { onTimeout: () => void }) => {
   useEffect(() => {
     const interval = setInterval(() => setTime(time - 1), 500);
     return () => clearInterval(interval);
-  });
+  }, [time]);
+
+  useEffect(() => {
+    if (time == 0) {
+      (async () => {
+        const result = await fabricCanvas.current?.toBlob({
+          format: "png",
+          multiplier: 2,
+        });
+        globalThis.wawa(result);
+        props.onTimeout();
+      })();
+    }
+  }, [time, props]);
 
   useEffect(() => {
     const colours = ["#f00", "#0f0", "#00f", "#ff0", "#f0f", "#0ff"];
@@ -32,17 +45,6 @@ export const FabricJSCanvas = (props: { onTimeout: () => void }) => {
       canvas.dispose();
     };
   }, []);
-
-  if (time == 0) {
-    (async () => {
-      const result = await fabricCanvas.current?.toBlob({
-        format: "png",
-        multiplier: 2,
-      });
-      globalThis.wawa(result);
-      props.onTimeout();
-    })();
-  }
 
   return (
     <>
