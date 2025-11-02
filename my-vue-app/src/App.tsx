@@ -16,6 +16,7 @@ import bopitImage from "./assets/bopit.webp";
 import clippy from "./assets/clipy.jpeg";
 import hourglass from "./assets/hourglass.gif";
 import puppetImage from "./assets/puppet.webp";
+import clippy from "./assets/clip.webp";
 import { FabricJSCanvas } from "./DrawableCanvas";
 import * as myTheme from "./theme";
 import "./theme/index.css";
@@ -467,7 +468,7 @@ function Gambler({ punish }: { punish: (x: number) => void }) {
 
   function gamble() {
     let list = [];
-    punish(20);
+    punish(5);
     for (let i = 0; i < 5; i++) {
       if (Math.random() >= 0.5) {
         list.push("o");
@@ -484,14 +485,8 @@ function Gambler({ punish }: { punish: (x: number) => void }) {
     ) {
       punish(-100);
     }
-    if (
-      list[0] === "x" &&
-      list[0] === list[1] &&
-      list[1] === list[2] &&
-      list[2] === list[3] &&
-      list[3] === list[4]
-    ) {
-      punish(100);
+    if (list[0] === "x" && list[0] === list[1] && list[1] === list[2] && list[2] === list[3] && list[3] === list[4]) {
+      punish(50)
     }
     setGambles(list);
   }
@@ -503,7 +498,7 @@ function Gambler({ punish }: { punish: (x: number) => void }) {
       <div> {gambleys[2]} </div>
       <div> {gambleys[3]} </div>
       <div> {gambleys[4]} </div>
-      <button onClick={() => gamble()}>-20 seconds</button>
+      <button onClick={() => gamble()}>-5 seconds</button>
     </UiThingy>
   );
 }
@@ -791,7 +786,7 @@ function Clippy() {
     clippyPhrases[Math.floor(Math.random() * clippyPhrases.length)]
   );
 
-  if (count > 3) {
+  if (count > 2) {
     setCount(0);
     setTime(30);
     return <></>;
@@ -809,7 +804,7 @@ function Clippy() {
         }}
       >
         Clippy Says: {clippyPhrase.current}
-        <img src={clippy}></img>
+        <img src={clippy} height= "60%" width= "100%"></img>
       </UiThingy>
     );
   }
