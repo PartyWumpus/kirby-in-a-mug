@@ -53,11 +53,7 @@ const eventList = [
   "drawing",
 ] as const;
 
-const debuffList = [
-  "swapKeys",
-  "rotateKey",
-  "hideCursor",
-] as const;
+const debuffList = ["swapKeys", "rotateKey", "hideCursor"] as const;
 
 declare global {
   var sentMessage: () => void;
@@ -191,7 +187,7 @@ function App() {
         break;
       }
       case "hideCursor": {
-        
+        document.documentElement.style.cursor = 'none'; 
       }
     }
   }
