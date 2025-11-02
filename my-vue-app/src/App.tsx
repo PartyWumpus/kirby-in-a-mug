@@ -17,6 +17,7 @@ import clippy from "./assets/clip.webp";
 import hourglass from "./assets/hourglass.gif";
 import puppetImage from "./assets/puppet.webp";
 import hackathing from "./assets/hackathing .mp3";
+import puppetJumpscare from "./assets/anobg.gif";
 import { FabricJSCanvas } from "./DrawableCanvas";
 import * as myTheme from "./theme";
 import "./theme/index.css";
