@@ -193,8 +193,8 @@ function App() {
     globalThis.wawa = async (blob: Blob) => {
       const fileToken = await session.uploadImage(blob, {
         filename: "pfp.png",
-        width: 100,
-        height: 100,
+        width: 80,
+        height: 80,
       });
 
       conversation.send({
@@ -272,9 +272,8 @@ function App() {
                 src="https://orteil.dashnet.org/experiments/cookie/"
               ></iframe>
             </UiThingy>*/}
-            <UiThingy title="time remaining">
-              <TimerGame time={time} />
-            </UiThingy>
+
+            <TimerGame time={time} />
             <UiThingy title="do not press">
               <button onClick={() => triggerRandomDebuff()}></button>
             </UiThingy>
@@ -394,11 +393,8 @@ function Keeb({
   onKeyPress: (key: string) => void;
 }) {
   return (
-    <div
-      style={{
-      }}
-      className="window">
-    <div className="title-bar">
+    <div style={{}} className="window">
+      <div className="title-bar">
         <div className="title-bar-text">Keyboard</div>
         <div className="title-bar-controls">
           <button aria-label="Minimize" />
@@ -406,7 +402,7 @@ function Keeb({
           <button aria-label="Close" />
         </div>
       </div>
-      <svg width="100%" height="100%" className="window-body" >
+      <svg width="100%" height="100%" className="window-body">
         <g>
           {Object.entries(keyboard)
             .filter(([_key, letter]) => letter.globallyPositioned === false)
@@ -424,7 +420,12 @@ function Keeb({
                   onKeyPress(key);
                 }}
               >
-                <button style={{width: "50", height: "50"}}></button>
+                <rect
+                  style={{
+                    width: "50",
+                    height: "50",
+                  }}
+                ></rect>
                 <text
                   width="50"
                   height="50"
@@ -444,11 +445,19 @@ function Keeb({
 }
 
 function TimerGame({ time }: { time: number }) {
-  return <span>{time}</span>;
+  return (
+    <UiThingy title="time remaining" warning={time < 30}>
+      <span>{time}</span>
+    </UiThingy>
+  );
 }
 
 function UiThingy(
-  props: PropsWithChildren<{ title?: string; width?: number }>
+  props: PropsWithChildren<{
+    title?: string;
+    width?: number;
+    warning?: boolean;
+  }>
 ) {
   const nodeRef = useRef<HTMLDivElement>(null);
   const offsets = useRef<[number, number]>([
@@ -474,7 +483,14 @@ function UiThingy(
         className="window"
         ref={nodeRef}
       >
-        <div className="title-bar">
+        <div
+          className="title-bar"
+          style={{
+            transition: "filter 100ms linear",
+            animation:
+              props.warning === true ? "flash 1s step-start infinite" : "",
+          }}
+        >
           <div className="title-bar-text" style={{ userSelect: "none" }}>
             {props.title ?? "drag me"}
           </div>
