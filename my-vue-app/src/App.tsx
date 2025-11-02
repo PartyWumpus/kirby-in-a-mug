@@ -16,6 +16,7 @@ import bopitImage from "./assets/bopit.webp";
 import clippy from "./assets/clip.webp";
 import hourglass from "./assets/hourglass.gif";
 import puppetImage from "./assets/puppet.webp";
+import hackathing from "./assets/hackathing .mp3";
 import { FabricJSCanvas } from "./DrawableCanvas";
 import * as myTheme from "./theme";
 import "./theme/index.css";
@@ -208,6 +209,14 @@ function App() {
     const key2 = keys[(keys.length * Math.random()) << 0];
     return [key1, key2];
   }
+
+  useEffect(() => {
+    let audio = new Audio(hackathing);
+    audio.loop = true
+    audio.play();
+
+    return () => {audio.pause()}
+  }, [username]);
 
   async function signUp(username: string) {
     const session = getTalkSession({
@@ -792,6 +801,9 @@ function Clippy() {
     "Would you like to send a fax?",
     "Please refill your printer ink!",
     "Who needs AI when you have Clippy!",
+    "This is what ozempic does to people!",
+    "Let's go gambling!",
+    "I miss my wife"
   ];
   const clippyPhrase = useRef(
     clippyPhrases[Math.floor(Math.random() * clippyPhrases.length)]
