@@ -12,11 +12,18 @@ import {
 import Draggable from "react-draggable";
 import "./App.css";
 import puppetJumpscare from "./assets/anobg.gif";
+import puppety from "./assets/abababababa.mp3";
 import bopitImage from "./assets/bopit.webp";
 import clippy from "./assets/clip.webp";
 import hackathing from "./assets/hackathing .mp3";
 import hourglass from "./assets/hourglass.gif";
 import puppetImage from "./assets/puppet.webp";
+import boppyStart from "./assets/boppy.mp3";
+import boppyEnd from "./assets/boppy2.mp3";
+import twistyStart from "./assets/twisty.mp3";
+import twistyEnd from "./assets/twisty2.mp3";
+import pullyStart from "./assets/pully.mp3";
+import pullyEnd from "./assets/pully2.mp3";
 import { FabricJSCanvas } from "./DrawableCanvas";
 import * as myTheme from "./theme";
 import "./theme/index.css";
@@ -129,7 +136,7 @@ function App() {
           .current!.conversation(conversationId)
           .send({ text: newEvent, custom: data });
       }
-    }, 10000);
+    }, 15000);
 
     return () => {
       clearInterval(interval1);
@@ -392,9 +399,6 @@ function App() {
               <>
                 <UiThingy title="do not press">
                   <button onClick={() => triggerRandomDebuff()}></button>
-                </UiThingy>
-                <UiThingy title="random event button">
-                  <button onClick={() => randomEvent()}></button>
                 </UiThingy>
                 <Gambler punish={punish} />
                 <Clippy />
@@ -726,6 +730,19 @@ function Scramble({
 function BopIt({ deleter }: { deleter: (x: number) => void }) {
   const actions = ["Bop It!", "Twist It!", "Pull It!"] as const;
   const chosen = useRef(actions[Math.floor(Math.random() * actions.length)]);
+  const hasPlayed = useRef(false);
+
+  useEffect(() => {
+    if (hasPlayed.current === false) {
+      
+      let audio = new Audio(boppyStart);
+      if (chosen.current == "Twist It!"){audio = new Audio(twistyStart)}
+      if (chosen.current == "Pull It!"){audio = new Audio(pullyStart)}
+      audio.play();
+      hasPlayed.current = true  
+    }
+  }, [])
+
   return (
     <UiThingy title={chosen.current} width={180}>
       <img width="160" height="200" src={bopitImage} />
@@ -736,6 +753,8 @@ function BopIt({ deleter }: { deleter: (x: number) => void }) {
           } else {
             deleter(-10);
           }
+          let audio = new Audio(boppyEnd);
+          audio.play();
         }}
       >
         bop
@@ -747,6 +766,8 @@ function BopIt({ deleter }: { deleter: (x: number) => void }) {
           } else {
             deleter(-10);
           }
+          let audio = new Audio(twistyEnd);
+          audio.play()
         }}
       >
         twist
@@ -758,6 +779,8 @@ function BopIt({ deleter }: { deleter: (x: number) => void }) {
           } else {
             deleter(-10);
           }
+          let audio = new Audio(pullyEnd);
+          audio.play()
         }}
       >
         pull
@@ -769,6 +792,7 @@ function BopIt({ deleter }: { deleter: (x: number) => void }) {
 function MusicBox({ deleter }: { deleter: (x: number) => void }) {
   const [time, setTime] = useState(200);
   const [timeLeft, setTime2] = useState(10);
+  const hasPlayed = useRef(false);
 
   useEffect(() => {
     const interval1 = setInterval(() => {
@@ -780,6 +804,15 @@ function MusicBox({ deleter }: { deleter: (x: number) => void }) {
       clearInterval(interval1);
     };
   }, [time, timeLeft]);
+
+  useEffect(() => {
+    if (timeLeft <= 0 && hasPlayed.current === false) {
+      let audio = new Audio(puppety);
+      audio.play();
+      hasPlayed.current = true
+
+    }
+  }, [timeLeft]);
 
   if (timeLeft <= 0) {
     setTimeout(() => deleter(-30), 1000);
@@ -803,11 +836,11 @@ function MusicBox({ deleter }: { deleter: (x: number) => void }) {
 
   return (
     <UiThingy title="Wind the box!" width={500}>
-      <Progress max={30} current={timeLeft} />
+      <Progress max={20} current={timeLeft} />
       <img width="480" height="200" src={puppetImage} />
       <button
         onClick={() => {
-          setTime2(Math.min(timeLeft + 2, 30));
+          setTime2(Math.min(timeLeft + 2, 20));
         }}
       >
         wind
