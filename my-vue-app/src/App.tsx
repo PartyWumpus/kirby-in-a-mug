@@ -15,6 +15,7 @@ import puppetJumpscare from "./assets/anobg.gif";
 import bopitImage from "./assets/bopit.webp";
 import hourglass from "./assets/hourglass.gif";
 import puppetImage from "./assets/puppet.webp";
+import clippy from "./assets/clipy.jpeg";
 import { FabricJSCanvas } from "./DrawableCanvas";
 import * as myTheme from "./theme";
 import "./theme/index.css";
@@ -335,6 +336,7 @@ function App() {
             <UiThingy title="random event button">
               <button onClick={() => randomEvent()}></button>
             </UiThingy>
+            <Gambler punish={punish} />
             <Clippy />
             {Object.entries(popups).map(([id, flavor]) => {
               let elem = <span></span>;
@@ -438,6 +440,40 @@ function App() {
         </>
       )}
     </>
+  );
+}
+
+function Gambler({ punish }: { punish: (x: number) => void }) {
+  const [gambleys, setGambles] = useState(["x", "o", "x", "o", "x"]);
+
+  function gamble() {
+    let list = [];
+    punish(20);
+    for (let i = 0; i < 5; i++) {
+      if (Math.random() >= 0.5) {
+        list.push("o");
+      } else {
+        list.push("x");
+      }
+    }
+    if (list[0] === "o" && list[0] === list[1] && list[1] === list[2] && list[2] === list[3] && list[3] === list[4]) {
+      punish(-100);
+    }
+    if (list[0] === "x" && list[0] === list[1] && list[1] === list[2] && list[2] === list[3] && list[3] === list[4]) {
+      punish(100)
+    }
+    setGambles(list);
+  }
+
+  return (
+    <UiThingy title="lets go gambling!">
+      <div> {gambleys[0]} </div>
+      <div> {gambleys[1]} </div>
+      <div> {gambleys[2]} </div>
+      <div> {gambleys[3]} </div>
+      <div> {gambleys[4]} </div>
+      <button onClick={() => gamble()}>-20 seconds</button>
+    </UiThingy>
   );
 }
 
@@ -567,7 +603,7 @@ function Scramble({
   sessionRef: TalkSession;
 }) {
   const randomWord = useRef(words[Math.floor(Math.random() * words.length)]);
-  const scrambledWord = useRef(shuffle(randomWord.current.split("")));
+  const scrambledWord = useRef(shuffle(shuffle(randomWord.current.split(""))!));
 
   useEffect(() => {
     const id = crypto.randomUUID();
@@ -719,22 +755,29 @@ function Clippy() {
     "Please refill your printer ink!",
     "Who needs AI when you have Clippy!",
   ];
-  const clippyPhrase =
-    useRef(clippyPhrases[Math.floor(Math.random() * clippyPhrases.length)]);
+  const clippyPhrase = useRef(
+    clippyPhrases[Math.floor(Math.random() * clippyPhrases.length)]
+  );
 
   if (count > 3) {
-    setCount(0)
-    setTime(30)
-    return <></>
+    setCount(0);
+    setTime(30);
+    return <></>;
   }
 
   if (time <= 0) {
     return (
-      <UiThingy key={count} title="Help from Clippy!" onClose={() => {
-        setCount(count+1)
-        clippyPhrase.current = clippyPhrases[Math.floor(Math.random() * clippyPhrases.length)];
-        }}>
+      <UiThingy
+        key={count}
+        title="Help from Clippy!"
+        onClose={() => {
+          setCount(count + 1);
+          clippyPhrase.current =
+            clippyPhrases[Math.floor(Math.random() * clippyPhrases.length)];
+        }}
+      >
         Clippy Says: {clippyPhrase.current}
+        <img src={clippy}></img>
       </UiThingy>
     );
   }
