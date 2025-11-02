@@ -80,14 +80,14 @@ function App() {
   const [time, setTime] = useState(120);
   const [bannedKey, setBan] = useState<string>("");
   const [popups, setPopups] = useState<
-    Record<string, (typeof eventList)[number]>
+    Record<string, [(typeof eventList)[number], Record<string, string>]>
   >({});
-
   const [gameOver, setGameOver] = useState(false);
 
   const chatboxRef = useRef<ChatboxRef>(null);
   const sessionRef = useRef<TalkSession>(null);
   const messageIdRef = useRef<string>("not-an-id");
+
   useEffect(() => {
     const interval1 = setInterval(() => {
       if (time <= 0 && gameOver === false) {
@@ -113,9 +113,14 @@ function App() {
       if (username === "server") {
         const newEvent =
           eventList[Math.floor(Math.random() * eventList.length)];
+        let data = {};
+        if (newEvent === "scramble") {
+          const randomWord = words[Math.floor(Math.random() * words.length)];
+          data = { word: randomWord };
+        }
         sessionRef
           .current!.conversation(conversationId)
-          .send({ text: newEvent });
+          .send({ text: newEvent, custom: data });
       }
     }, 10000);
 
@@ -259,7 +264,10 @@ function App() {
             const eventType = lastMessage.plaintext;
             setPopups({
               ...popups,
-              [crypto.randomUUID()]: eventType as (typeof eventList)[number],
+              [crypto.randomUUID()]: [
+                eventType as (typeof eventList)[number],
+                lastMessage.custom,
+              ],
             });
           }
         }
@@ -272,7 +280,7 @@ function App() {
 
   function randomEvent() {
     const newEvent = eventList[Math.floor(Math.random() * eventList.length)];
-    setPopups({ ...popups, [crypto.randomUUID()]: newEvent });
+    setPopups({ ...popups, [crypto.randomUUID()]: [newEvent, {}] });
   }
 
   useEffect(() => {
@@ -363,7 +371,7 @@ function App() {
                 <Gambler punish={punish} />
                 <Clippy />
 
-                {Object.entries(popups).map(([id, flavor]) => {
+                {Object.entries(popups).map(([id, [flavor, data]]) => {
                   let elem = <span></span>;
                   const deleter = (x?: number) => {
                     setPopups(
@@ -376,7 +384,7 @@ function App() {
                   };
                   switch (flavor) {
                     case "scramble":
-                      elem = <Scramble deleter={deleter} />;
+                      elem = <Scramble deleter={deleter} data={data} />;
                       break;
                     case "bopit":
                       elem = <BopIt deleter={deleter} />;
@@ -634,14 +642,19 @@ function UiThingy(
 }
 
 function Scramble({
-  deleter
+  deleter,
+  data,
 }: {
   deleter: (x: number) => void;
+  data: Record<string, string>;
 }) {
-  const randomWord = useRef(words[Math.floor(Math.random() * words.length)]);
+  console.log(data);
+  const randomWord = useRef(
+    data["word"] ?? words[Math.floor(Math.random() * words.length)]
+  );
   const scrambledWord = useRef(shuffle(randomWord.current.split(""))!.join(""));
-  while (scrambledWord.current === randomWord.current){
-    scrambledWord.current = shuffle(randomWord.current.split(""))!.join("")
+  while (scrambledWord.current === randomWord.current) {
+    scrambledWord.current = shuffle(randomWord.current.split(""))!.join("");
   }
 
   useEffect(() => {
@@ -656,20 +669,6 @@ function Scramble({
     };
   }, [deleter]);
 
-  function shuffle(array: string[]) {
-    let currentIndex = array.length;
-
-    while (currentIndex != 0) {
-      const randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex],
-        array[currentIndex],
-      ];
-      return array;
-    }
-  }
   return <UiThingy title="Scramble"> {scrambledWord.current} </UiThingy>;
 }
 
@@ -884,6 +883,21 @@ function MissingLetter({
       <span>{randomLetter.current} is disabled</span>
     </UiThingy>
   );
+}
+
+function shuffle(array: string[]) {
+  let currentIndex = array.length;
+
+  while (currentIndex != 0) {
+    const randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+    return array;
+  }
 }
 
 export default App;
