@@ -1,3 +1,4 @@
+import "98.css";
 import { getTalkSession, type TalkSession } from "@talkjs/core";
 import { Chatbox, type ChatboxRef } from "@talkjs/react-components";
 import "@talkjs/react-components/base.css";
@@ -10,7 +11,6 @@ import {
 } from "react";
 import Draggable from "react-draggable";
 import "./App.css";
-import "98.css";
 import bopitImage from "./assets/bopit.webp";
 import hourglass from "./assets/hourglass.gif";
 import puppetImage from "./assets/puppet.webp";
@@ -173,16 +173,25 @@ function App() {
     sessionRef.current = session;
 
     await session.currentUser.createIfNotExists({ name: username });
+
     setUsername(username);
 
     const conversation = session.conversation(conversationId);
     conversation.createIfNotExists();
+    conversation.subscribeMessages((a) => {
+      if (a !== null) {
+        const lastMessage = a[0];
+        if (
+          lastMessage.sender?.id === session.currentUser.id &&
+          lastMessage.content[0]?.type === "file" &&
+          lastMessage.content[0].filename === "pfp.png"
+        ) {
+          session.currentUser.set({ photoUrl: lastMessage.content[0].url });
+        }
+      }
+    });
 
     globalThis.wawa = async (blob: Blob) => {
-      console.log(blob);
-      const file = new File([blob], "pfp.png");
-      console.log(file);
-
       const fileToken = await session.uploadImage(blob, {
         filename: "pfp.png",
         width: 80,
@@ -191,10 +200,6 @@ function App() {
 
       conversation.send({
         content: [{ type: "file", fileToken }],
-      });
-
-      session.currentUser.set({
-        photoUrl: "wasd",
       });
     };
   }
@@ -617,8 +622,8 @@ function MusicBox({ deleter }: { deleter: (x: number) => void }) {
   }
   return (
     <UiThingy title="Wind the box!" width={500}>
-      <Progress max={30} current={timeLeft}/>
-      <img width="500" height="200" src={puppetImage} />
+      <Progress max={30} current={timeLeft} />
+      <img width="480" height="200" src={puppetImage} />
       <button
         onClick={() => {
           setTime2(Math.min(timeLeft + 2, 30));
@@ -638,13 +643,16 @@ function Drawing({ deleter }: { deleter: () => void }) {
   );
 }
 
-export function Progress({max, current}: {max: number, current: number}) {
-  const progressPercent = (current/max*100) 
-  return(
+export function Progress({ max, current }: { max: number; current: number }) {
+  const progressPercent = (current / max) * 100;
+  return (
     <div className="progress-indicator segmented">
-  <span className="progress-indicator-bar" style= {{width: `${progressPercent}%`}} />
-</div>
-  )
+      <span
+        className="progress-indicator-bar"
+        style={{ width: `${progressPercent}%` }}
+      />
+    </div>
+  );
 }
 
 function MissingLetter({
