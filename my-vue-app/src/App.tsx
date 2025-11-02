@@ -10,6 +10,7 @@ import {
 } from "react";
 import Draggable from "react-draggable";
 import "./App.css";
+import "98.css";
 import bopitImage from "./assets/bopit.webp";
 import puppetImage from "./assets/puppet.webp";
 import { FabricJSCanvas } from "./DrawableCanvas";
@@ -81,7 +82,7 @@ function App() {
     };
   }, [time]);
 
-  function punish(penalty: number){
+  function punish(penalty: number) {
     setTime(time - penalty);
   }
 
@@ -214,9 +215,8 @@ function App() {
   }, []);
 
   function onKeyPress(key: string) {
-    if (key === bannedKey){
-      punish(5)
-      
+    if (key === bannedKey) {
+      punish(5);
     }
     const x = document.querySelector<HTMLParagraphElement>(
       ".t-editor > div > p"
@@ -312,7 +312,7 @@ function App() {
                   elem = <MusicBox deleter={deleter} />;
                   break;
                 case "missingLetter":
-                  elem = <MissingLetter deleter={deleter} setBan={setBan}/>;
+                  elem = <MissingLetter deleter={deleter} setBan={setBan} />;
                   break;
                 case "captcha":
                   //elem = <Captcha />;
@@ -462,7 +462,7 @@ function UiThingy(
 
   return (
     <Draggable
-      handle="strong"
+      handle=".title-bar"
       nodeRef={nodeRef}
       positionOffset={{ x: offsets.current[0], y: offsets.current[1] }}
       onStart={() => {
@@ -472,16 +472,21 @@ function UiThingy(
       <div
         style={{
           position: "absolute",
-          background: "black",
-          width: `${props.width ?? 100}px`,
+          width: `${props.width ?? 150}px`,
           pointerEvents: "all",
         }}
+        className="window"
         ref={nodeRef}
       >
-        <strong>
-          <div style={{ background: "blue" }}>{props.title ?? "Drag me"}</div>
-        </strong>
-        <div>{props.children}</div>
+        <div className="title-bar">
+          <div className="title-bar-text" style={{userSelect: "none"}}>{props.title ?? "drag me"}</div>
+          <div className="title-bar-controls">
+            <button aria-label="Minimize" />
+            <button aria-label="Maximize" />
+            <button aria-label="Close" />
+          </div>
+        </div>
+        <div className="window-body">{props.children}</div>
       </div>
     </Draggable>
   );
@@ -530,8 +535,8 @@ function BopIt({ deleter }: { deleter: (x: number) => void }) {
   const actions = ["Bop It!", "Twist It!", "Pull It!"] as const;
   const chosen = useRef(actions[Math.floor(Math.random() * actions.length)]);
   return (
-    <UiThingy title={chosen.current}>
-      <img width="100" height="200" src={bopitImage} />
+    <UiThingy title={chosen.current} width={180}>
+      <img width="160" height="200" src={bopitImage} />
       <button
         onClick={() => {
           if (chosen.current == "Bop It!") {
@@ -613,10 +618,17 @@ function Drawing({ deleter }: { deleter: () => void }) {
   );
 }
 
-
-function MissingLetter({ deleter, setBan }: { deleter: (x: number) => void, setBan: (x: string) => void }){
-  const letterList = ["e", "t", "a", "o", "i", "n", "s", "h", "r", "l"]
-  const randomLetter = useRef(letterList[Math.floor(Math.random() * letterList.length)])
+function MissingLetter({
+  deleter,
+  setBan,
+}: {
+  deleter: (x: number) => void;
+  setBan: (x: string) => void;
+}) {
+  const letterList = ["e", "t", "a", "o", "i", "n", "s", "h", "r", "l"];
+  const randomLetter = useRef(
+    letterList[Math.floor(Math.random() * letterList.length)]
+  );
   const [time, setTime] = useState(30);
 
   useEffect(() => {
@@ -630,23 +642,21 @@ function MissingLetter({ deleter, setBan }: { deleter: (x: number) => void, setB
   }, [time]);
 
   useEffect(() => {
-    setBan(randomLetter.current)
+    setBan(randomLetter.current);
 
     return () => {
-      setBan('')
-    }
-  }, [])
+      setBan("");
+    };
+  }, []);
 
-  if (time <= 0){
-    deleter(30)
+  if (time <= 0) {
+    deleter(30);
   }
-
-  
 
   return (
     <UiThingy title="disabled letter">
       <span>{time}s</span>
-      <br/>
+      <br />
       <span>{randomLetter.current} is disabled</span>
     </UiThingy>
   );

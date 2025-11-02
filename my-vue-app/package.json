@@ -12,6 +12,7 @@
   "dependencies": {
     "@talkjs/core": "^1.5.8",
     "@talkjs/react-components": "^0.0.27",
+    "98.css": "^0.1.21",
     "fabric": "^6.7.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
