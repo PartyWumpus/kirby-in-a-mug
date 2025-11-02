@@ -206,7 +206,7 @@ function App() {
   useEffect(() => {
     // Jank!
     const interval = setInterval(() => {
-      const x = document.querySelector<HTMLDivElement>(".t-editor > div");
+      const x = document.querySelector<HTMLDivElement>(".t-editor > div"); // <- Jank
       if (x !== null) {
         x.contentEditable = "false";
       }
@@ -405,12 +405,17 @@ function Keeb({
   return (
     <div
       style={{
-        border: "1px white solid",
-        height: "200px",
-        width: "100%",
       }}
-    >
-      <svg width="100%" height="100%">
+      className="window">
+    <div className="title-bar">
+        <div className="title-bar-text">Keyboard</div>
+        <div className="title-bar-controls">
+          <button aria-label="Minimize" />
+          <button aria-label="Maximize" />
+          <button aria-label="Close" />
+        </div>
+      </div>
+      <svg width="100%" height="100%" className="window-body" >
         <g>
           {Object.entries(keyboard)
             .filter(([_key, letter]) => letter.globallyPositioned === false)
@@ -428,7 +433,7 @@ function Keeb({
                   onKeyPress(key);
                 }}
               >
-                <rect width="50" height="50" x="0" y="0"></rect>
+                <button style={{width: "50", height: "50"}}></button>
                 <text
                   width="50"
                   height="50"
