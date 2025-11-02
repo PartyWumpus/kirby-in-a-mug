@@ -14,10 +14,9 @@ import "./App.css";
 import puppetJumpscare from "./assets/anobg.gif";
 import bopitImage from "./assets/bopit.webp";
 import clippy from "./assets/clip.webp";
+import hackathing from "./assets/hackathing .mp3";
 import hourglass from "./assets/hourglass.gif";
 import puppetImage from "./assets/puppet.webp";
-import hackathing from "./assets/hackathing .mp3";
-import puppetJumpscare from "./assets/anobg.gif";
 import { FabricJSCanvas } from "./DrawableCanvas";
 import * as myTheme from "./theme";
 import "./theme/index.css";
@@ -213,10 +212,12 @@ function App() {
 
   useEffect(() => {
     let audio = new Audio(hackathing);
-    audio.loop = true
+    audio.loop = true;
     audio.play();
 
-    return () => {audio.pause()}
+    return () => {
+      audio.pause();
+    };
   }, [username]);
 
   async function signUp(username: string) {
@@ -299,6 +300,17 @@ function App() {
       const x = document.querySelector<HTMLDivElement>(".t-editor > div"); // <- Jank
       if (x !== null) {
         x.contentEditable = "false";
+      }
+
+      const a = document.querySelector<HTMLDivElement>(".t-chatbox-content");
+      if (a !== null && !a.classList.contains("window")) {
+        a.className += " window";
+        a.insertAdjacentHTML(
+          "afterbegin",
+          `<div class="title-bar">
+        <div class="title-bar-text">Chat</div>
+      </div>`
+        );
       }
     }, 100);
     return () => clearInterval(interval);
@@ -538,7 +550,7 @@ function Keeb({
   onKeyPress: (key: string) => void;
 }) {
   return (
-    <div style={{}} className="window">
+    <div style={{ marginTop: "15px" }} className="window">
       <div className="title-bar">
         <div className="title-bar-text">Keyboard</div>
         <div className="title-bar-controls">
@@ -804,7 +816,7 @@ function Clippy() {
     "Who needs AI when you have Clippy!",
     "This is what ozempic does to people!",
     "Let's go gambling!",
-    "I miss my wife"
+    "I miss my wife",
   ];
   const clippyPhrase = useRef(
     clippyPhrases[Math.floor(Math.random() * clippyPhrases.length)]
