@@ -1,4 +1,3 @@
-import "98.css";
 import { getTalkSession, type TalkSession } from "@talkjs/core";
 import { Chatbox, type ChatboxRef } from "@talkjs/react-components";
 import "@talkjs/react-components/base.css";
@@ -11,6 +10,7 @@ import {
 } from "react";
 import Draggable from "react-draggable";
 import "./App.css";
+import "98.css";
 import bopitImage from "./assets/bopit.webp";
 import hourglass from "./assets/hourglass.gif";
 import puppetImage from "./assets/puppet.webp";
@@ -177,21 +177,12 @@ function App() {
 
     const conversation = session.conversation(conversationId);
     conversation.createIfNotExists();
-    conversation.subscribeMessages((a) => {
-      if (a !== null) {
-        const lastMessage = a[0];
-        if (
-          lastMessage.sender?.id === session.currentUser.id &&
-          lastMessage.content[0]?.type === "file" &&
-          lastMessage.content[0].filename === "pfp.png"
-        ) {
-          session.currentUser.set({ photoUrl: lastMessage.content[0].url });
-        }
-      }
-    });
 
-    // Jank!
     globalThis.wawa = async (blob: Blob) => {
+      console.log(blob);
+      const file = new File([blob], "pfp.png");
+      console.log(file);
+
       const fileToken = await session.uploadImage(blob, {
         filename: "pfp.png",
         width: 80,
@@ -200,6 +191,10 @@ function App() {
 
       conversation.send({
         content: [{ type: "file", fileToken }],
+      });
+
+      session.currentUser.set({
+        photoUrl: "wasd",
       });
     };
   }
@@ -232,10 +227,24 @@ function App() {
     } else {
       x.innerText = key;
     }
+    // DEBUG
+    setScore(score + 1);
+    /*
+    setKeyboard({
+      ...keyboard,
+      [key]: {
+        ...letter,
+        position: [
+          letter.position[0] + 1,
+          letter.position[1],
+        ],
+      },
+    });
+    */
   }
 
   // DEBUG
-  signUp("qwerty");
+  signUp("qwert");
 
   return (
     <>
@@ -421,12 +430,7 @@ function Keeb({
                   onKeyPress(key);
                 }}
               >
-                <rect
-                  style={{
-                    width: "50",
-                    height: "50",
-                  }}
-                ></rect>
+                <rect width="50" height="50" x="0" y="0"></rect>
                 <text
                   width="50"
                   height="50"
@@ -597,8 +601,8 @@ function MusicBox({ deleter }: { deleter: (x: number) => void }) {
   useEffect(() => {
     const interval1 = setInterval(() => {
       setTime(time - 1);
-      setTime2(timeLeft - 1);
-    }, 1000);
+      setTime2(timeLeft - 0.1);
+    }, 100);
 
     return () => {
       clearInterval(interval1);
@@ -613,11 +617,11 @@ function MusicBox({ deleter }: { deleter: (x: number) => void }) {
   }
   return (
     <UiThingy title="Wind the box!" width={500}>
-      <span>{timeLeft}s</span>
-      <img width="480" height="200" src={puppetImage} />
+      <Progress max={30} current={timeLeft}/>
+      <img width="500" height="200" src={puppetImage} />
       <button
         onClick={() => {
-          setTime2(Math.min(timeLeft + 5, 30));
+          setTime2(Math.min(timeLeft + 2, 30));
         }}
       >
         wind
@@ -632,6 +636,15 @@ function Drawing({ deleter }: { deleter: () => void }) {
       <FabricJSCanvas onTimeout={deleter} />
     </UiThingy>
   );
+}
+
+export function Progress({max, current}: {max: number, current: number}) {
+  const progressPercent = (current/max*100) 
+  return(
+    <div className="progress-indicator segmented">
+  <span className="progress-indicator-bar" style= {{width: `${progressPercent}%`}} />
+</div>
+  )
 }
 
 function MissingLetter({

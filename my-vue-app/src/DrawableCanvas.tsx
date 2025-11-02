@@ -1,17 +1,19 @@
 import * as fabric from "fabric"; // v6
 import { useEffect, useRef, useState } from "react";
+import { Progress } from "./App";
 
 export const FabricJSCanvas = (props: { onTimeout: () => void }) => {
+  const maxTime = 15
   const canvasEl = useRef<HTMLCanvasElement>(null);
   const fabricCanvas = useRef<fabric.Canvas>(null);
-  const [time, setTime] = useState(15);
+  const [time, setTime] = useState(maxTime);
   useEffect(() => {
-    const interval = setInterval(() => setTime(time - 1), 500);
+    const interval = setInterval(() => setTime(time - 0.1), 100);
     return () => clearInterval(interval);
   }, [time]);
 
   useEffect(() => {
-    if (time == 0) {
+    if (time <= 0) {
       (async () => {
         const result = await fabricCanvas.current?.toBlob({
           format: "png",
@@ -48,7 +50,7 @@ export const FabricJSCanvas = (props: { onTimeout: () => void }) => {
 
   return (
     <>
-      {time}
+      <Progress max={maxTime} current={time}/>
       <canvas width="100px" height="100px" ref={canvasEl} />
     </>
   );
