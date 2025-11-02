@@ -13,9 +13,9 @@ import Draggable from "react-draggable";
 import "./App.css";
 import puppetJumpscare from "./assets/anobg.gif";
 import bopitImage from "./assets/bopit.webp";
+import clippy from "./assets/clipy.jpeg";
 import hourglass from "./assets/hourglass.gif";
 import puppetImage from "./assets/puppet.webp";
-import clippy from "./assets/clipy.jpeg";
 import { FabricJSCanvas } from "./DrawableCanvas";
 import * as myTheme from "./theme";
 import "./theme/index.css";
@@ -67,24 +67,36 @@ globalThis.sentMessage = () => {
 function App() {
   const [username, setUsername] = useState<string>("");
   const [score, setScore] = useState<number>(0);
-  const [time, setTime] = useState(120);
+  const [time, setTime] = useState(2);
   const [bannedKey, setBan] = useState<string>("");
   const [popups, setPopups] = useState<
     Record<string, (typeof eventList)[number]>
   >({});
+
+  const [gameOver, setGameOver] = useState(false);
+
   const chatboxRef = useRef<ChatboxRef>(null);
   const sessionRef = useRef<TalkSession>(null);
   const messageIdRef = useRef<string>("not-an-id");
-
   useEffect(() => {
     const interval1 = setInterval(() => {
-      setTime(time - 1);
+      if (time <= 0 && gameOver === false) {
+        sessionRef
+          .current!.conversation(conversationId)
+          .participant(sessionRef.current!.currentUser)
+          .delete();
+        setGameOver(true);
+        clearInterval(interval1);
+        setTime(0);
+      } else if (gameOver === false) {
+        setTime(time - 1);
+      }
     }, 1500);
 
     return () => {
       clearInterval(interval1);
     };
-  }, [time]);
+  }, [time, gameOver]);
 
   useEffect(() => {
     const interval1 = setInterval(() => {
@@ -330,50 +342,57 @@ function App() {
             </UiThingy>*/}
 
             <TimerGame time={time} />
-            <UiThingy title="do not press">
-              <button onClick={() => triggerRandomDebuff()}></button>
-            </UiThingy>
-            <UiThingy title="random event button">
-              <button onClick={() => randomEvent()}></button>
-            </UiThingy>
-            <Gambler punish={punish} />
-            <Clippy />
-            {Object.entries(popups).map(([id, flavor]) => {
-              let elem = <span></span>;
-              const deleter = (x?: number) => {
-                setPopups(
-                  Object.fromEntries(
-                    Object.entries(popups).filter(([i]) => i !== id)
-                  )
-                );
-                setTime(time + (x ?? 0));
-                setScore(score + Math.max(x ?? 0, 0));
-              };
-              switch (flavor) {
-                case "scramble":
-                  elem = <Scramble deleter={deleter} />;
-                  break;
-                case "bopit":
-                  elem = <BopIt deleter={deleter} />;
-                  break;
-                case "musicBox":
-                  elem = <MusicBox deleter={deleter} />;
-                  break;
-                case "missingLetter":
-                  elem = <MissingLetter deleter={deleter} setBan={setBan} />;
-                  break;
-                case "captcha":
-                  //elem = <Captcha />;
-                  break;
-                case "drawing":
-                  elem = <Drawing deleter={deleter} />;
-                  break;
-                case "trivia":
-                  //elem = <Trivia />;
-                  break;
-              }
-              return <Fragment key={id}>{elem}</Fragment>;
-            })}
+            {gameOver === false ? (
+              <>
+                <UiThingy title="do not press">
+                  <button onClick={() => triggerRandomDebuff()}></button>
+                </UiThingy>
+                <UiThingy title="random event button">
+                  <button onClick={() => randomEvent()}></button>
+                </UiThingy>
+                <Gambler punish={punish} />
+                <Clippy />
+
+                {Object.entries(popups).map(([id, flavor]) => {
+                  let elem = <span></span>;
+                  const deleter = (x?: number) => {
+                    setPopups(
+                      Object.fromEntries(
+                        Object.entries(popups).filter(([i]) => i !== id)
+                      )
+                    );
+                    setTime(time + (x ?? 0));
+                    setScore(score + Math.max(x ?? 0, 0));
+                  };
+                  switch (flavor) {
+                    case "scramble":
+                      elem = <Scramble deleter={deleter} />;
+                      break;
+                    case "bopit":
+                      elem = <BopIt deleter={deleter} />;
+                      break;
+                    case "musicBox":
+                      elem = <MusicBox deleter={deleter} />;
+                      break;
+                    case "missingLetter":
+                      elem = (
+                        <MissingLetter deleter={deleter} setBan={setBan} />
+                      );
+                      break;
+                    case "captcha":
+                      //elem = <Captcha />;
+                      break;
+                    case "drawing":
+                      elem = <Drawing deleter={deleter} />;
+                      break;
+                    case "trivia":
+                      //elem = <Trivia />;
+                      break;
+                  }
+                  return <Fragment key={id}>{elem}</Fragment>;
+                })}
+              </>
+            ) : undefined}
           </div>
           <Keeb keyboard={keyboard} onKeyPress={onKeyPress} />
 
@@ -456,11 +475,23 @@ function Gambler({ punish }: { punish: (x: number) => void }) {
         list.push("x");
       }
     }
-    if (list[0] === "o" && list[0] === list[1] && list[1] === list[2] && list[2] === list[3] && list[3] === list[4]) {
+    if (
+      list[0] === "o" &&
+      list[0] === list[1] &&
+      list[1] === list[2] &&
+      list[2] === list[3] &&
+      list[3] === list[4]
+    ) {
       punish(-100);
     }
-    if (list[0] === "x" && list[0] === list[1] && list[1] === list[2] && list[2] === list[3] && list[3] === list[4]) {
-      punish(100)
+    if (
+      list[0] === "x" &&
+      list[0] === list[1] &&
+      list[1] === list[2] &&
+      list[2] === list[3] &&
+      list[3] === list[4]
+    ) {
+      punish(100);
     }
     setGambles(list);
   }
@@ -533,7 +564,7 @@ function Keeb({
 
 function TimerGame({ time }: { time: number }) {
   return (
-    <UiThingy title="time remaining" warning={time < 30}>
+    <UiThingy title="time remaining" warning={time < 45} onTop={time < 20}>
       <span>{time}</span>
       <img src={hourglass} height="20px" />
     </UiThingy>
@@ -546,6 +577,7 @@ function UiThingy(
     width?: number;
     warning?: boolean;
     onClose?: () => void;
+    onTop?: boolean;
   }>
 ) {
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -560,7 +592,7 @@ function UiThingy(
       nodeRef={nodeRef}
       positionOffset={{ x: offsets.current[0], y: offsets.current[1] }}
       onStart={() => {
-        nodeRef.current!.style.zIndex = `${globalCounter++}`;
+        nodeRef.current!.style.zIndex = `${globalCounter++ + (props.onTop ? globalCounter : 0)}`;
       }}
     >
       <div
