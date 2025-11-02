@@ -13,10 +13,9 @@ import Draggable from "react-draggable";
 import "./App.css";
 import puppetJumpscare from "./assets/anobg.gif";
 import bopitImage from "./assets/bopit.webp";
-import clippy from "./assets/clipy.jpeg";
+import clippy from "./assets/clip.webp";
 import hourglass from "./assets/hourglass.gif";
 import puppetImage from "./assets/puppet.webp";
-import clippy from "./assets/clip.webp";
 import { FabricJSCanvas } from "./DrawableCanvas";
 import * as myTheme from "./theme";
 import "./theme/index.css";
@@ -34,12 +33,22 @@ const conversationId = "the_convo";
 
 const eventList = [
   "scramble",
+  "scramble",
+  "scramble",
+  "scramble",
+  "scramble",
+  "bopit",
+  "bopit",
+  "bopit",
+  "bopit",
+  "bopit",
   "bopit",
   "musicBox",
   "missingLetter",
-  "captcha",
+  "missingLetter",
+  "missingLetter",
+  "missingLetter",
   "drawing",
-  "trivia",
 ] as const;
 
 const debuffList = [
@@ -68,7 +77,7 @@ globalThis.sentMessage = () => {
 function App() {
   const [username, setUsername] = useState<string>("");
   const [score, setScore] = useState<number>(0);
-  const [time, setTime] = useState(2);
+  const [time, setTime] = useState(120);
   const [bannedKey, setBan] = useState<string>("");
   const [popups, setPopups] = useState<
     Record<string, (typeof eventList)[number]>
@@ -108,7 +117,7 @@ function App() {
           .current!.conversation(conversationId)
           .send({ text: newEvent });
       }
-    }, 5000);
+    }, 10000);
 
     return () => {
       clearInterval(interval1);
@@ -380,14 +389,8 @@ function App() {
                         <MissingLetter deleter={deleter} setBan={setBan} />
                       );
                       break;
-                    case "captcha":
-                      //elem = <Captcha />;
-                      break;
                     case "drawing":
                       elem = <Drawing deleter={deleter} />;
-                      break;
-                    case "trivia":
-                      //elem = <Trivia />;
                       break;
                   }
                   return <Fragment key={id}>{elem}</Fragment>;
@@ -485,8 +488,14 @@ function Gambler({ punish }: { punish: (x: number) => void }) {
     ) {
       punish(-100);
     }
-    if (list[0] === "x" && list[0] === list[1] && list[1] === list[2] && list[2] === list[3] && list[3] === list[4]) {
-      punish(50)
+    if (
+      list[0] === "x" &&
+      list[0] === list[1] &&
+      list[1] === list[2] &&
+      list[2] === list[3] &&
+      list[3] === list[4]
+    ) {
+      punish(50);
     }
     setGambles(list);
   }
@@ -587,7 +596,9 @@ function UiThingy(
       nodeRef={nodeRef}
       positionOffset={{ x: offsets.current[0], y: offsets.current[1] }}
       onStart={() => {
-        nodeRef.current!.style.zIndex = `${globalCounter++ + (props.onTop ? globalCounter : 0)}`;
+        nodeRef.current!.style.zIndex = `${
+          globalCounter++ + (props.onTop ? globalCounter : 0)
+        }`;
       }}
     >
       <div
@@ -623,14 +634,15 @@ function UiThingy(
 }
 
 function Scramble({
-  deleter,
-  sessionRef,
+  deleter
 }: {
   deleter: (x: number) => void;
-  sessionRef: TalkSession;
 }) {
   const randomWord = useRef(words[Math.floor(Math.random() * words.length)]);
-  const scrambledWord = useRef(shuffle(shuffle(randomWord.current.split(""))!));
+  const scrambledWord = useRef(shuffle(randomWord.current.split(""))!.join(""));
+  while (scrambledWord.current === randomWord.current){
+    scrambledWord.current = shuffle(randomWord.current.split(""))!.join("")
+  }
 
   useEffect(() => {
     const id = crypto.randomUUID();
@@ -642,7 +654,7 @@ function Scramble({
     return () => {
       delete messageListeners[id];
     };
-  }, [sessionRef, deleter]);
+  }, [deleter]);
 
   function shuffle(array: string[]) {
     let currentIndex = array.length;
@@ -804,7 +816,7 @@ function Clippy() {
         }}
       >
         Clippy Says: {clippyPhrase.current}
-        <img src={clippy} height= "60%" width= "100%"></img>
+        <img src={clippy} height="60%" width="100%"></img>
       </UiThingy>
     );
   }
