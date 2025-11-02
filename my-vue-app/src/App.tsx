@@ -45,7 +45,20 @@ const debuffList = [
   //      "hideCursor",
 ] as const;
 
+declare global {
+  var sentMessage: () => void;
+}
+
 let globalCounter = 0;
+
+const messageListeners: Record<string, (x: string) => void> = {};
+
+globalThis.sentMessage = () => {
+  const x = document.querySelector<HTMLParagraphElement>(
+    ".t-editor > div > p"
+  )!;
+  Object.values(messageListeners).forEach((a) => a(x.textContent));
+};
 
 function App() {
   const [username, setUsername] = useState<string>("");
@@ -281,7 +294,7 @@ function App() {
               };
               switch (flavor) {
                 case "scramble":
-                  elem = <Scramble />;
+                  elem = <Scramble deleter={deleter} />;
                   break;
                 case "bopit":
                   elem = <BopIt deleter={deleter} />;
@@ -465,10 +478,27 @@ function UiThingy(
   );
 }
 
-function Scramble() {
-  const randomWord = words[Math.floor(Math.random() * words.length)];
-  const wordArray = randomWord.split("");
-  const scrambledWord = useRef(shuffle(wordArray));
+function Scramble({
+  deleter,
+  sessionRef,
+}: {
+  deleter: (x: number) => void;
+  sessionRef: TalkSession;
+}) {
+  const randomWord = useRef(words[Math.floor(Math.random() * words.length)]);
+  const scrambledWord = useRef(shuffle(randomWord.current.split("")));
+
+  useEffect(() => {
+    const id = crypto.randomUUID();
+    messageListeners[id] = (str) => {
+      if (str.includes(randomWord.current)) {
+        deleter(20);
+      }
+    };
+    return () => {
+      delete messageListeners[id];
+    };
+  }, [sessionRef, deleter]);
 
   function shuffle(array: string[]) {
     let currentIndex = array.length;

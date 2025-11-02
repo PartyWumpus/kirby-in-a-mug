@@ -105,7 +105,10 @@ export function MessageField(props) {
                 t-kind="icon-button"
                 aria-label=${t.SEND_BUTTON_TEXT}
                 title=${t.SEND_BUTTON_TEXT}
-                onClick=${() => editor.send()}
+                onClick=${() => {
+                  globalThis.sentMessage()
+                  editor.send()
+                }}
               >
                 <${Icon} type="send" common=${common} />
               </button>
