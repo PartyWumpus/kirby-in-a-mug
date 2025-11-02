@@ -24,9 +24,10 @@ import { words } from "./words";
 
 type Letter = {
   symbol: string;
-  position: [number, number];
+  offset: [0, 0];
   globallyPositioned: boolean;
   rotation?: number;
+  row: number;
 };
 
 const appId = "tYrKVjrQ";
@@ -133,37 +134,37 @@ function App() {
   }
 
   const [keyboard, setKeyboard] = useState<Record<string, Letter>>({
-    q: { symbol: "q", position: [3, 5], globallyPositioned: false },
-    w: { symbol: "w", position: [13, 5], globallyPositioned: false },
-    e: { symbol: "e", position: [23, 5], globallyPositioned: false },
-    r: { symbol: "r", position: [33, 5], globallyPositioned: false },
-    t: { symbol: "t", position: [43, 5], globallyPositioned: false },
-    y: { symbol: "y", position: [53, 5], globallyPositioned: false },
-    u: { symbol: "u", position: [63, 5], globallyPositioned: false },
-    i: { symbol: "i", position: [73, 5], globallyPositioned: false },
-    o: { symbol: "o", position: [83, 5], globallyPositioned: false },
-    p: { symbol: "p", position: [93, 5], globallyPositioned: false },
+    q: { symbol: "q", offset: [0, 0], globallyPositioned: false, row: 0 },
+    w: { symbol: "w", offset: [0, 0], globallyPositioned: false, row: 0 },
+    e: { symbol: "e", offset: [0, 0], globallyPositioned: false, row: 0 },
+    r: { symbol: "r", offset: [0, 0], globallyPositioned: false, row: 0 },
+    t: { symbol: "t", offset: [0, 0], globallyPositioned: false, row: 0 },
+    y: { symbol: "y", offset: [0, 0], globallyPositioned: false, row: 0 },
+    u: { symbol: "u", offset: [0, 0], globallyPositioned: false, row: 0 },
+    i: { symbol: "i", offset: [0, 0], globallyPositioned: false, row: 0 },
+    o: { symbol: "o", offset: [0, 0], globallyPositioned: false, row: 0 },
+    p: { symbol: "p", offset: [0, 0], globallyPositioned: false, row: 0 },
 
-    a: { symbol: "a", position: [5, 37.5], globallyPositioned: false },
-    s: { symbol: "s", position: [15, 37.5], globallyPositioned: false },
-    d: { symbol: "d", position: [25, 37.5], globallyPositioned: false },
-    f: { symbol: "f", position: [35, 37.5], globallyPositioned: false },
-    g: { symbol: "g", position: [45, 37.5], globallyPositioned: false },
-    h: { symbol: "h", position: [55, 37.5], globallyPositioned: false },
-    j: { symbol: "j", position: [65, 37.5], globallyPositioned: false },
-    k: { symbol: "k", position: [75, 37.5], globallyPositioned: false },
-    l: { symbol: "l", position: [85, 37.5], globallyPositioned: false },
-    " ": { symbol: "␣", position: [95, 37.5], globallyPositioned: false },
+    a: { symbol: "a", offset: [0, 0], globallyPositioned: false, row: 1 },
+    s: { symbol: "s", offset: [0, 0], globallyPositioned: false, row: 1 },
+    d: { symbol: "d", offset: [0, 0], globallyPositioned: false, row: 1 },
+    f: { symbol: "f", offset: [0, 0], globallyPositioned: false, row: 1 },
+    g: { symbol: "g", offset: [0, 0], globallyPositioned: false, row: 1 },
+    h: { symbol: "h", offset: [0, 0], globallyPositioned: false, row: 1 },
+    j: { symbol: "j", offset: [0, 0], globallyPositioned: false, row: 1 },
+    k: { symbol: "k", offset: [0, 0], globallyPositioned: false, row: 1 },
+    l: { symbol: "l", offset: [0, 0], globallyPositioned: false, row: 1 },
+    " ": { symbol: "␣", offset: [0, 0], globallyPositioned: false, row: 1 },
 
-    z: { symbol: "z", position: [10, 70], globallyPositioned: false },
-    x: { symbol: "x", position: [20, 70], globallyPositioned: false },
-    c: { symbol: "c", position: [30, 70], globallyPositioned: false },
-    v: { symbol: "v", position: [40, 70], globallyPositioned: false },
-    b: { symbol: "b", position: [50, 70], globallyPositioned: false },
-    n: { symbol: "n", position: [60, 70], globallyPositioned: false },
-    m: { symbol: "m", position: [70, 70], globallyPositioned: false },
-    ".": { symbol: ".", position: [80, 70], globallyPositioned: false },
-    "?": { symbol: "?", position: [90, 70], globallyPositioned: false },
+    z: { symbol: "z", offset: [0, 0], globallyPositioned: false, row: 2 },
+    x: { symbol: "x", offset: [0, 0], globallyPositioned: false, row: 2 },
+    c: { symbol: "c", offset: [0, 0], globallyPositioned: false, row: 2 },
+    v: { symbol: "v", offset: [0, 0], globallyPositioned: false, row: 2 },
+    b: { symbol: "b", offset: [0, 0], globallyPositioned: false, row: 2 },
+    n: { symbol: "n", offset: [0, 0], globallyPositioned: false, row: 2 },
+    m: { symbol: "m", offset: [0, 0], globallyPositioned: false, row: 2 },
+    ".": { symbol: ".", offset: [0, 0], globallyPositioned: false, row: 2 },
+    "?": { symbol: "?", offset: [0, 0], globallyPositioned: false, row: 2 },
   });
   const joinButtonRef = useRef<HTMLInputElement>(null);
 
@@ -427,56 +428,6 @@ function App() {
             ) : undefined}
           </div>
           <Keeb keyboard={keyboard} onKeyPress={onKeyPress} />
-
-          {/* TODO */}
-          <div
-            style={{
-              position: "absolute",
-              left: "0",
-              top: "0",
-              width: "100%",
-              height: "100%",
-              pointerEvents: "none",
-            }}
-          >
-            {Object.entries(keyboard)
-              .filter(([_key, letter]) => letter.globallyPositioned === true)
-              .map(([key, letter]) => (
-                <svg
-                  key={key}
-                  style={{
-                    position: "absolute",
-                    width: "100%",
-                    height: "100%",
-                    translate: `${letter.position[0]}% ${letter.position[1]}%`,
-                    userSelect: "none",
-                    cursor: "pointer",
-                    rotate: `${letter.rotation}deg`,
-                  }}
-                  onClick={() => {
-                    onKeyPress(key);
-                  }}
-                >
-                  <rect
-                    width="50"
-                    height="50"
-                    x="0"
-                    y="0"
-                    style={{ pointerEvents: "all" }}
-                  ></rect>
-                  <text
-                    width="50"
-                    height="50"
-                    x="7"
-                    y="20"
-                    fontSize="1.5em"
-                    fill="white"
-                  >
-                    {letter.symbol}
-                  </text>
-                </svg>
-              ))}
-          </div>
         </>
       ) : (
         <>
@@ -557,39 +508,109 @@ function Keeb({
           <button aria-label="Close" />
         </div>
       </div>
-      <svg width="100%" height="100%" className="window-body">
-        <g>
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+        className="window-body"
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            width: "98%",
+            gap: "1%",
+            justifyContent: "space-evenly",
+          }}
+        >
           {Object.entries(keyboard)
-            .filter(([_key, letter]) => letter.globallyPositioned === false)
+            .filter(([_key, letter]) => letter.row === 0)
             .map(([key, letter]) => (
-              <g
+              <button
                 key={key}
                 style={{
-                  translate: `${letter.position[0]}% ${letter.position[1]}%`,
+                  translate: `${letter.offset[0]}px ${letter.offset[1]}px`,
                   userSelect: "none",
                   cursor: "pointer",
                   rotate: `${letter.rotation}deg`,
                   transformOrigin: "25px 25px",
+                  width: "50px",
+                  height: "50px",
                 }}
                 onClick={() => {
                   onKeyPress(key);
                 }}
               >
-                <rect width="50" height="50" x="0" y="0"></rect>
-                <text
-                  width="50"
-                  height="50"
-                  x="7"
-                  y="20"
-                  fontSize="1.5em"
-                  fill="white"
-                >
-                  {letter.symbol}
-                </text>
-              </g>
+                {letter.symbol}
+              </button>
             ))}
-        </g>
-      </svg>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            width: "98%",
+            gap: "1%",
+            justifyContent: "space-evenly",
+          }}
+        >
+          {Object.entries(keyboard)
+            .filter(([_key, letter]) => letter.row === 1)
+            .map(([key, letter]) => (
+              <button
+                key={key}
+                style={{
+                  translate: `${letter.offset[0]}px ${letter.offset[1]}px`,
+                  userSelect: "none",
+                  cursor: "pointer",
+                  rotate: `${letter.rotation}deg`,
+                  transformOrigin: "25px 25px",
+                  width: "50px",
+                  height: "50px",
+                }}
+                onClick={() => {
+                  onKeyPress(key);
+                }}
+              >
+                {letter.symbol}
+              </button>
+            ))}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            width: "98%",
+            gap: "1%",
+            justifyContent: "space-evenly",
+          }}
+        >
+          {Object.entries(keyboard)
+            .filter(([_key, letter]) => letter.row === 2)
+            .map(([key, letter]) => (
+              <button
+                key={key}
+                style={{
+                  translate: `${letter.offset[0]}px ${letter.offset[1]}px`,
+                  userSelect: "none",
+                  cursor: "pointer",
+                  rotate: `${letter.rotation}deg`,
+                  transformOrigin: "center",
+                  width: "50px",
+                  height: "50px",
+                }}
+                onClick={() => {
+                  onKeyPress(key);
+                }}
+              >
+                {letter.symbol}
+              </button>
+            ))}
+        </div>
+      </div>
     </div>
   );
 }
